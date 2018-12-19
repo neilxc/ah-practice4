@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Application.Values;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -9,18 +11,19 @@ namespace API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IMediator _mediator;
 
-        public ValuesController(DataContext context)
+        public ValuesController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
         
         // GET api/values
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var values = await _context.Values.ToListAsync();
+            var values = await _mediator.Send(new List.Query());
+            
             return Ok(values);
         }
 
@@ -28,7 +31,8 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var value = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
+            var value = await _mediator.Send(new Details.Query{Id = id});
+            
             return Ok(value);
         }
 
