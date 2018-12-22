@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Application.Activities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -24,7 +25,7 @@ namespace API.Controllers
             return Ok(activities);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetActivity")]
         public async Task<IActionResult> Details(int id)
         {
             var activity = await _mediator.Send(new Details.Query {Id = id});
@@ -37,10 +38,11 @@ namespace API.Controllers
         {
             var response = await _mediator.Send(command);
 
-            return Ok(response);
+            return CreatedAtRoute("GetActivity", new {id = response.Id}, response);
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "IsActivityHost")]
         public async Task<IActionResult> Edit(int id, Edit.Command command)
         {
             command.Id = id;
