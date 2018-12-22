@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using Application.Interfaces;
+using Application.Profiles;
+using Application.Users;
 using Application.Values;
 using API.Middleware;
 using AutoMapper;
@@ -66,6 +68,7 @@ namespace API
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IProfileReader, ProfileReader>();
             
             services.AddAutoMapper();
             services.AddMediatR(typeof(List.Handler).Assembly);
@@ -74,7 +77,7 @@ namespace API
                     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                     opt.Filters.Add(new AuthorizeFilter(policy));
                 })
-                .AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining(typeof(Details)); })
+                .AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining(typeof(Login)); })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
