@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Values;
 using API.Middleware;
+using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
 using Infrastructure.Security;
@@ -60,6 +61,7 @@ namespace API
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
             
+            services.AddAutoMapper();
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddMvc(opt =>
                 {
