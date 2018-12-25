@@ -18,9 +18,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(string sort, string username, bool host, int? limit, int? offset)
         {
-            var activities = await _mediator.Send(new List.Query());
+            var activities = await _mediator.Send(new List.Query(sort, username, host, limit, offset));
 
             return Ok(activities);
         }

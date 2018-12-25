@@ -27,7 +27,10 @@ namespace Application.Profiles
         {
             var currentUsername = _userAccessor.GetCurrentUsername();
             
-            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserName == username);
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(p => p.Photos)
+                .FirstOrDefaultAsync(x => x.UserName == username);
             
             if (user == null)
                 throw new RestException(HttpStatusCode.NotFound, new {User = "Not Found"});

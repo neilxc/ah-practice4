@@ -15,11 +15,12 @@ namespace Persistence
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ActivitiyAttendee> Attendees { get; set; }
         public DbSet<FollowedPeople> FollowedPeople { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
+
             builder.Entity<Value>()
                 .HasData(
                     new Value {Id = 1, Name = "Value 101"},

@@ -21,6 +21,20 @@ namespace Application.Activities
 
         public class Query : IRequest<ActivitiesEnvelope>
         {
+            public Query(string sort, string username, bool host, int? limit, int? offset)
+            {
+                Sort = sort;
+                Username = username;
+                Host = host;
+                Limit = limit;
+                Offset = offset;
+            }
+
+            public string Sort { get; set; }
+            public string Username { get; set; }
+            public bool Host { get; set; }
+            public int? Limit { get; }
+            public int? Offset { get; }
         }
 
         public class Handler : IRequestHandler<Query, ActivitiesEnvelope>
@@ -37,8 +51,37 @@ namespace Application.Activities
             public async Task<ActivitiesEnvelope> Handle(Query request, CancellationToken cancellationToken)
             {
                 var queryable = _context.Activities.GetAllData();
+                
+                if (!string.IsNullOrEmpty(request.Username))
+                {
+                    queryable = queryable
+                        .Where(a => a.Attendees.Any(x => x.AppUser.UserName == request.Username));
+                }
+                
+                if (!string.IsNullOrEmpty(request.Username) && request.Host)
+                {
+                    queryable = queryable
+                        .Where(a => a.Attendees.Any(x => x.IsHost));
+                }
 
-                var activities = await queryable.ToListAsync(cancellationToken);
+                switch (request.Sort)
+                {
+                    case "past":
+                        queryable = queryable
+                            .Where(x => x.Date < DateTime.Now)
+                            .OrderByDescending(x => x.Date);
+                        break;
+                    default:
+                        queryable = queryable
+                            .Where(x => x.Date > DateTime.Now)
+                            .OrderBy(x => x.Date);
+                        break;
+                }
+
+                var activities = await queryable
+                    .Skip(request.Offset ?? 0)
+                    .Take(request.Limit ?? 3)
+                    .ToListAsync(cancellationToken);
 
                 return new ActivitiesEnvelope
                 {
