@@ -1,0 +1,10 @@
+language: csharp
+mono: none
+dotnet: 2.2.100
+script:
+- dotnet restore
+- dotnet build
+- dotnet test tests/Application.Tests
+notifications:
+  email:
+  - neil@intapoint.com
