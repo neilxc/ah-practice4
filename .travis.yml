@@ -10,3 +10,6 @@ script:
 notifications:
   email:
   - neil@intapoint.com
+deploy:
+  provider: azure_web_apps
+  verbose: true
