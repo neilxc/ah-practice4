@@ -33,6 +33,14 @@ namespace API.Controllers
             return Ok(activity);
         }
 
+        /// <summary>
+        /// Creates a new activity for the currently logged in user
+        /// </summary>
+        /// <remarks>Create Activity</remarks>
+        /// <response code="201">Activity Created</response>
+        /// <response code="400">This is a bad request</response>
+        /// <response code="401">This is an unauthorised request</response>
+        /// <response code="500">Server Error</response>
         [HttpPost]
         public async Task<IActionResult> Create(Create.Command command)
         {
