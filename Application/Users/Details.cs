@@ -34,6 +34,7 @@ namespace Application.Users
             public async Task<User> Handle(Query request, CancellationToken cancellationToken)
             {
                 var userFromDb = await _context.Users.AsNoTracking()
+                    .Include(p => p.Photos)
                     .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);
 
                 var user = _mapper.Map<AppUser, User>(userFromDb);
