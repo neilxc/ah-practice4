@@ -45,6 +45,8 @@ namespace API
             {
                 opt.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddCors();
             
             ConfigureServices(services);
         }
@@ -148,6 +150,7 @@ namespace API
             
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseCors(x => x.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
             app.UseMvc();
 
             app.UseSwagger();

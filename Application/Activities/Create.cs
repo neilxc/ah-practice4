@@ -17,6 +17,7 @@ namespace Application.Activities
         {
             public string Title { get; set; }
             public string Description { get; set; }
+            public string Category { get; set; }
             public DateTime Date { get; set; }
             public string City { get; set; }
             public string Venue { get; set; }
@@ -34,6 +35,7 @@ namespace Application.Activities
             {
                 RuleFor(x => x.Activity.Title).NotEmpty().NotNull();
                 RuleFor(x => x.Activity.Description).NotEmpty().NotNull();
+                RuleFor(x => x.Activity.Category).NotEmpty().NotNull();
                 RuleFor(x => x.Activity.Date).NotEmpty().NotNull();
                 RuleFor(x => x.Activity.City).NotEmpty().NotNull();
                 RuleFor(x => x.Activity.Venue).NotEmpty().NotNull();

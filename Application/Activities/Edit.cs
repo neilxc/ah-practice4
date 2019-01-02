@@ -17,6 +17,7 @@ namespace Application.Activities
         {
             public string Title { get; set; }
             public string Description { get; set; }
+            public string Category { get; set; }
             public DateTime? Date { get; set; }
             public string City { get; set; }
             public string Venue { get; set; }
@@ -50,6 +51,7 @@ namespace Application.Activities
 
                 activity.Title = request.Activity.Title ?? activity.Title;
                 activity.Description = request.Activity.Description ?? activity.Description;
+                activity.Category = request.Activity.Category ?? activity.Category;
                 activity.Date = request.Activity.Date ?? activity.Date;
                 activity.City = request.Activity.City ?? activity.City;
                 activity.Venue = request.Activity.Venue ?? activity.Venue;
