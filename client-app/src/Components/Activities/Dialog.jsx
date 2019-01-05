@@ -3,42 +3,24 @@ import {
     Dialog, 
     Button, 
     DialogContent, 
-    DialogContentText, 
-    DialogActions, 
+    DialogContentText,
     DialogTitle,
 } from "@material-ui/core";
 import Form from "./Form";
 
 export default class extends Component {
-    state = {
-        open: false,
-        activity: {
-            title: '',
-            description: '',
-            category: '',
-            city: '',
-            venue: '',
-            date: ''
-        }
-    };
-
-    handleToggle = () => {
-        this.setState({
-            open: !this.state.open
-        })
-    };
     
     render() {
-        const {open, activity: {title, description, category, venue, city, date}} = this.state;
-        const {classes} = this.props;
+        const {categories, onSubmit, dialogOpen, dialogToggle, activity, cancelFormEdit} = this.props;
         return (
             <Fragment>
-                <Button color={'inherit'} onClick={this.handleToggle}>
+                <Button color={'inherit'} onClick={dialogToggle}>
                     Create Activity
                 </Button>
                 <Dialog
-                    open={open}
-                    onClose={this.handleToggle}
+                    open={dialogOpen}
+                    onClose={dialogToggle}
+                    activity={activity}
                 >
                     <DialogTitle id="form-dialog-title">
                         Create a new Activity
@@ -47,17 +29,13 @@ export default class extends Component {
                         <DialogContentText>
                             Please fill out the form below
                         </DialogContentText>
-                        <Form/>
+                        <Form
+                            categories={categories}
+                            onSubmit={onSubmit}
+                            activity={activity}
+                            cancelFormEdit={cancelFormEdit}
+                        />
                     </DialogContent>
-                    <DialogActions>
-                        <Button 
-                            color="primary" 
-                            variant={'contained'}
-                            onClick={this.handleSubmit}
-                        >
-                            Create
-                        </Button>
-                    </DialogActions>
                 </Dialog>
             </Fragment>
         )

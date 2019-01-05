@@ -1,50 +1,11 @@
 {
   "activities": [
     {
-      "id": 11,
-      "title": "Azure Event!",
-      "description": "Description of the test event",
-      "date": "2019-01-09T04:39:34.017",
-      "city": "London",
-      "venue": "Tower of London",
-      "geoCoordinate": {
-        "longitude": -0.076132,
-        "latitude": 51.50853
-      },
-      "attendees": [
-        {
-          "username": "bob",
-          "dateJoined": "2018-12-26T04:39:34.1940236",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
-          "isHost": true
-        }
-      ]
-    },
-    {
       "id": 3,
-      "title": "Future Activity 1",
-      "description": "Activity 1 month in future",
-      "date": "2019-01-26T20:00:00",
-      "city": "London",
-      "venue": "Pub",
-      "geoCoordinate": {
-        "longitude": 0.0759,
-        "latitude": 51.5081
-      },
-      "attendees": [
-        {
-          "username": "bob",
-          "dateJoined": "2019-01-26T04:38:33.9936451",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
-          "isHost": true
-        }
-      ]
-    },
-    {
-      "id": 4,
       "title": "Future Activity 2",
       "description": "Activity 2 months in future",
-      "date": "2019-01-26T18:00:00",
+      "category": "food",
+      "date": "2019-06-04T14:21:33.095341",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -54,7 +15,28 @@
       "attendees": [
         {
           "username": "test1",
-          "dateJoined": "2019-02-26T04:38:33.9936473",
+          "dateJoined": "2019-03-04T14:21:33.095341",
+          "image": null,
+          "isHost": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Future Activity 1",
+      "description": "Activity 1 month in future",
+      "category": "culture",
+      "date": "2019-03-04T14:21:33.09534",
+      "city": "London",
+      "venue": "Pub",
+      "geoCoordinate": {
+        "longitude": 0.0759,
+        "latitude": 51.5081
+      },
+      "attendees": [
+        {
+          "username": "bob",
+          "dateJoined": "2019-02-04T14:21:33.09534",
           "image": null,
           "isHost": true
         }
@@ -64,7 +46,8 @@
       "id": 5,
       "title": "Future Activity 3",
       "description": "Activity 3 months in future",
-      "date": "2019-03-26T04:38:33.9936485",
+      "category": "drinks",
+      "date": "2019-04-04T14:21:33.095341",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -74,7 +57,7 @@
       "attendees": [
         {
           "username": "test2",
-          "dateJoined": "2019-03-26T04:38:33.9936496",
+          "dateJoined": "2019-04-04T14:21:33.095341",
           "image": null,
           "isHost": true
         }
@@ -84,7 +67,8 @@
       "id": 6,
       "title": "Future Activity 4",
       "description": "Activity 4 months in future",
-      "date": "2019-04-26T04:38:33.993651",
+      "category": "drinks",
+      "date": "2019-05-04T14:21:33.095342",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -94,8 +78,8 @@
       "attendees": [
         {
           "username": "bob",
-          "dateJoined": "2019-04-26T04:38:33.9936521",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
+          "dateJoined": "2019-05-04T14:21:33.095342",
+          "image": null,
           "isHost": true
         }
       ]
@@ -104,7 +88,8 @@
       "id": 7,
       "title": "Future Activity 5",
       "description": "Activity 5 months in future",
-      "date": "2019-05-26T04:38:33.9936532",
+      "category": "drinks",
+      "date": "2019-06-04T14:21:33.095343",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -114,8 +99,8 @@
       "attendees": [
         {
           "username": "bob",
-          "dateJoined": "2019-05-26T04:38:33.9936544",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
+          "dateJoined": "2019-06-04T14:21:33.095343",
+          "image": null,
           "isHost": true
         }
       ]
@@ -124,7 +109,8 @@
       "id": 8,
       "title": "Future Activity 6",
       "description": "Activity 6 months in future",
-      "date": "2019-06-26T04:38:33.9936555",
+      "category": "music",
+      "date": "2019-07-04T14:21:33.095343",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -134,8 +120,8 @@
       "attendees": [
         {
           "username": "bob",
-          "dateJoined": "2019-06-26T04:38:33.9936566",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
+          "dateJoined": "2019-07-04T14:21:33.095344",
+          "image": null,
           "isHost": true
         }
       ]
@@ -144,7 +130,8 @@
       "id": 9,
       "title": "Future Activity 7",
       "description": "Activity 2 months ago",
-      "date": "2019-07-26T04:38:33.9936578",
+      "category": "travel",
+      "date": "2019-08-04T14:21:33.095344",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -154,8 +141,8 @@
       "attendees": [
         {
           "username": "bob",
-          "dateJoined": "2019-07-26T04:38:33.9936589",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
+          "dateJoined": "2019-08-04T14:21:33.095344",
+          "image": null,
           "isHost": true
         }
       ]
@@ -164,7 +151,8 @@
       "id": 10,
       "title": "Future Activity 8",
       "description": "Activity 8 months in future",
-      "date": "2019-08-26T04:38:33.9936601",
+      "category": "drinks",
+      "date": "2019-09-04T14:21:33.095345",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -174,12 +162,12 @@
       "attendees": [
         {
           "username": "bob",
-          "dateJoined": "2019-08-26T04:38:33.9936613",
-          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1545826386/xmv9is7jfat67e10xg0t.jpg",
+          "dateJoined": "2019-09-04T14:21:33.095345",
+          "image": null,
           "isHost": true
         }
       ]
     }
   ],
-  "activityCount": 9
+  "activityCount": 8
 }

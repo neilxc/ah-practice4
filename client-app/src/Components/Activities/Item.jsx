@@ -1,7 +1,6 @@
 import React from 'react';
-import {Paper, Typography, Grid, Button, Card, CardActionArea} from "@material-ui/core";
+import {Typography, Grid, Card, CardActionArea} from "@material-ui/core";
 import format from 'date-fns/format';
-import {Link} from 'react-router-dom';
 
 const styles = {
     paper: {

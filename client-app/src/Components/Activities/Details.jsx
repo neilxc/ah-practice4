@@ -20,10 +20,11 @@ import {
 import classnames from 'classnames';
 import red from '@material-ui/core/colors/red';
 import {Close, ExpandMore, MoreVert, Check, Image} from '@material-ui/icons';
+import format from 'date-fns/format'
 
 const styles = theme => ({
     card: {
-        maxWidth: 400,
+        // maxWidth: 600,
         marginTop: 60
     },
     media: {
@@ -62,6 +63,11 @@ class Details extends React.Component {
         this.setState({
             anchorEl: event.currentTarget
         });
+    
+    handleEditClick = (id) => {
+        this.props.onSelectEdit(id);
+        this.handleClose();
+    };
 
     handleClose = () =>
         this.setState({
@@ -69,7 +75,7 @@ class Details extends React.Component {
         });
 
     render() {
-        const {classes} = this.props;
+        const {classes, activity} = this.props;
         const {anchorEl} = this.state;
 
         return (
@@ -98,24 +104,24 @@ class Details extends React.Component {
                                     }
                                 }}
                             >
-                                <MenuItem onClick={this.handleClose}>
+                                <MenuItem onClick={() => this.handleEditClick(activity.id)}>
                                     Edit
                                 </MenuItem>
                             </Menu>
                         </div>
 
                     }
-                    title="Activity Title"
-                    subheader="September 14, 2016 at 8:00 PM"
+                    title={activity.title}
+                    subheader={format(activity.date, 'MMMM D, YYYY [at] h:mm A')}
                 />
                 <CardMedia
                     className={classes.media}
-                    image="/assets/categoryImages/drinks.jpg"
+                    image={`/assets/categoryImages/${activity.category}.jpg`}
                     title="Activity Title"
                 />
                 <CardContent>
                     <Typography component="p">
-                        Event description
+                        {activity.description}
                     </Typography>
                 </CardContent>
                 <CardActions className={classes.actions} disableActionSpacing>

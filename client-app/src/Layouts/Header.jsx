@@ -8,13 +8,19 @@ const styles = {
     }
 };
 
-export default ({onActivityCreate}) =>
+export default ({onActivityCreate, categories, dialogOpen, dialogToggle, cancelFormEdit}) =>
     <AppBar position="static">
         <Toolbar>
             <Typography variant={'h5'} color={'inherit'} style={styles.flex}>
                 Activity Hub
             </Typography>
             <Button color="inherit">Login</Button>
-            <CreateDialog onCreate={onActivityCreate}/>
+            <CreateDialog
+                onSubmit={onActivityCreate}
+                categories={categories}
+                dialogOpen={dialogOpen}
+                dialogToggle={dialogToggle}
+                cancelFormEdit={cancelFormEdit}
+            />
         </Toolbar>
     </AppBar>

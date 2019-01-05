@@ -1,8 +1,8 @@
-import React, {Fragment, Component} from 'react';
-import {Grid, Paper, Typography, List, Button, Card} from "@material-ui/core";
+import React, {Fragment} from 'react';
+import {Grid, Paper, Typography, List} from "@material-ui/core";
 import Item from './Item';
 import format from 'date-fns/format'
-import data from "../../activities";
+import Form from "./Form";
 import Details from "./Details";
 
 const styles = {
@@ -19,7 +19,7 @@ const styles = {
     },
     paperRight: {
         flex: 4,
-        margin: 10 + 47,
+        marginTop: 10 + 47,
         padding: 10,
     },
     date: {
@@ -35,18 +35,15 @@ const styles = {
 export default ({
                     activitiesByDate,
                     onSelect,
-                    activity: {
-                        id,
-                        title = 'Welcome',
-                        description = 'Please select an activity from the list',
-                        category,
-                        date,
-                        city,
-                        venue
-                    }
+                    activity,
+                    onSelectEdit,
+                    editMode,
+                    categories,
+                    onEdit,
+                    cancelFormEdit
                 }) => (
     <Grid container spacing={16} style={styles.root}>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
             {activitiesByDate.map(([group, activities]) =>
                 <Fragment key={group}>
                     <Typography variant={'overline'} style={styles.date} gutterBottom>
@@ -54,15 +51,34 @@ export default ({
                     </Typography>
                     <List>
                         {activities.map((activity) =>
-                            <Item key={activity.id} activity={activity} onSelect={onSelect}/>
+                            <Item
+                                key={activity.id}
+                                activity={activity}
+                                onSelect={onSelect}
+                            />
                         )}
                     </List>
 
                 </Fragment>
             )}
         </Grid>
-        <Grid item xs={4}>
-            <Details/>
+        <Grid item xs={6}>
+            {editMode
+                ? <Paper style={styles.paperRight}>
+                    <Form
+                        activity={activity}
+                        categories={categories}
+                        onSubmit={onEdit}
+                        cancelFormEdit={cancelFormEdit}
+                    />
+                </Paper>
+                : activity ?
+                <Details
+                    activity={activity}
+                    onSelectEdit={onSelectEdit}
+                /> : null
+            }
+
         </Grid>
     </Grid>
 );
