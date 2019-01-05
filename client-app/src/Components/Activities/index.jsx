@@ -40,7 +40,9 @@ export default ({
                     editMode,
                     categories,
                     onEdit,
-                    cancelFormEdit
+                    cancelFormEdit,
+                    attendActivity,
+                    cancelAttendance
                 }) => (
     <Grid container spacing={16} style={styles.root}>
         <Grid item xs={6}>
@@ -76,6 +78,8 @@ export default ({
                 <Details
                     activity={activity}
                     onSelectEdit={onSelectEdit}
+                    attendActivity={attendActivity}
+                    cancelAttendance={cancelAttendance}
                 /> : null
             }
 

@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {Header} from './Layouts';
 import Activities from './Components/Activities';
 import data from './activities.json';
-import * as _ from 'lodash';
-import format from 'date-fns/format';
 
 const categories = [
     'drinks', 'food', 'music', 'culture', 'travel'
@@ -78,7 +76,38 @@ class App extends Component {
         })
     };
 
+    handleActivityAttendance = (activity) => {
+        const attendee = {
+            username: "testuser",
+            dateJoined: new Date(),
+            image: null,
+            isHost: false
+        };
+        this.setState(({activities}) => ({
+            activities: activities.map(a => {
+                if (a.id === activity.id) {
+                    activity.attendees = [...activity.attendees, attendee];
+                    return {...activity}
+                } else {
+                    return a
+                }
+            })
+        }))
+    };
 
+    handleCancelAttendance = (activity) => {
+        const username = 'testuser';
+        this.setState(({activities}) => ({
+            activities: activities.map(a => {
+                if (a.id === activity.id) {
+                    activity.attendees = [...activity.attendees.filter(a => a.username !== username)];
+                    return {...activity}
+                } else {
+                    return a
+                }
+            })
+        }));
+    };
         
     render() {
         const activitiesByDate = this.getActivitiesByDate();
@@ -102,6 +131,8 @@ class App extends Component {
                     onSelectEdit={this.handleActivitySelectEdit}
                     onEdit={this.handleActivityEdit}
                     cancelFormEdit={this.handleCancelFormEdit}
+                    attendActivity={this.handleActivityAttendance}
+                    cancelAttendance={this.handleCancelAttendance}
                 />
             </div>
         );

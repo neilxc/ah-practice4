@@ -2,31 +2,10 @@
   "activities": [
     {
       "id": 3,
-      "title": "Future Activity 2",
-      "description": "Activity 2 months in future",
-      "category": "food",
-      "date": "2019-06-04T14:21:33.095341",
-      "city": "London",
-      "venue": "Pub",
-      "geoCoordinate": {
-        "longitude": 0.0759,
-        "latitude": 51.5081
-      },
-      "attendees": [
-        {
-          "username": "test1",
-          "dateJoined": "2019-03-04T14:21:33.095341",
-          "image": null,
-          "isHost": true
-        }
-      ]
-    },
-    {
-      "id": 4,
       "title": "Future Activity 1",
       "description": "Activity 1 month in future",
       "category": "culture",
-      "date": "2019-03-04T14:21:33.09534",
+      "date": "2019-02-04T14:21:33.09534",
       "city": "London",
       "venue": "Pub",
       "geoCoordinate": {
@@ -37,6 +16,27 @@
         {
           "username": "bob",
           "dateJoined": "2019-02-04T14:21:33.09534",
+          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1546675761/wxmwcqwgpchtbe0lvsqz.jpg",
+          "isHost": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Future Activity 2",
+      "description": "Activity 2 months in future",
+      "category": "food",
+      "date": "2019-03-04T14:21:33.095341",
+      "city": "London",
+      "venue": "Pub",
+      "geoCoordinate": {
+        "longitude": 0.0759,
+        "latitude": 51.5081
+      },
+      "attendees": [
+        {
+          "username": "test1",
+          "dateJoined": "2019-03-04T14:21:33.095341",
           "image": null,
           "isHost": true
         }
@@ -79,7 +79,7 @@
         {
           "username": "bob",
           "dateJoined": "2019-05-04T14:21:33.095342",
-          "image": null,
+          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1546675761/wxmwcqwgpchtbe0lvsqz.jpg",
           "isHost": true
         }
       ]
@@ -100,7 +100,7 @@
         {
           "username": "bob",
           "dateJoined": "2019-06-04T14:21:33.095343",
-          "image": null,
+          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1546675761/wxmwcqwgpchtbe0lvsqz.jpg",
           "isHost": true
         }
       ]
@@ -121,7 +121,7 @@
         {
           "username": "bob",
           "dateJoined": "2019-07-04T14:21:33.095344",
-          "image": null,
+          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1546675761/wxmwcqwgpchtbe0lvsqz.jpg",
           "isHost": true
         }
       ]
@@ -142,7 +142,7 @@
         {
           "username": "bob",
           "dateJoined": "2019-08-04T14:21:33.095344",
-          "image": null,
+          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1546675761/wxmwcqwgpchtbe0lvsqz.jpg",
           "isHost": true
         }
       ]
@@ -163,7 +163,7 @@
         {
           "username": "bob",
           "dateJoined": "2019-09-04T14:21:33.095345",
-          "image": null,
+          "image": "https://res.cloudinary.com/digua6bil/image/upload/v1546675761/wxmwcqwgpchtbe0lvsqz.jpg",
           "isHost": true
         }
       ]

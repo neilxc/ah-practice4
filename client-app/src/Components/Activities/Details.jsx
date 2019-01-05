@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import classnames from 'classnames';
 import red from '@material-ui/core/colors/red';
-import {Close, ExpandMore, MoreVert, Check, Image} from '@material-ui/icons';
+import {Close, ExpandMore, MoreVert, Check} from '@material-ui/icons';
 import format from 'date-fns/format'
 
 const styles = theme => ({
@@ -75,15 +75,20 @@ class Details extends React.Component {
         });
 
     render() {
-        const {classes, activity} = this.props;
+        const {classes, activity, attendActivity, cancelAttendance} = this.props;
+        const {attendees} = activity;
         const {anchorEl} = this.state;
+        const host = attendees.filter(a => a.isHost === true)[0];
+        const going = attendees.filter(a => a.username === "testuser")[0];
+        
+        if (!host) return <p>Loading...</p>;
 
         return (
             <Card className={classes.card}>
                 <CardHeader
                     avatar={
-                        <Avatar className={classes.avatar}>
-                            R
+                        <Avatar className={classes.avatar} src={host.image}>
+                            {host.username.charAt(0).toUpperCase()}
                         </Avatar>
                     }
                     action={
@@ -123,26 +128,37 @@ class Details extends React.Component {
                     <Typography component="p">
                         {activity.description}
                     </Typography>
-                </CardContent>
-                <CardActions className={classes.actions} disableActionSpacing>
-                    <Typography variant={'button'} style={{marginRight: 10}}>
-                        Going?
+                    <br/>
+                    <Typography variant={'h6'}>
+                        {going ? 'You are going to this activity' : 'Click below to attend this activity'}
                     </Typography>
-                    <Button variant={'contained'} color={'primary'} style={{marginRight: 5}}>
+                    <Typography variant={'body1'}>
+                        {attendees.length} {attendees.length === 1 ? 'person is' : 'people are'} going to this event
+                    </Typography>
+                </CardContent>
+                <CardActions className={classes.actions} >
+                    {!going ? <Button 
+                        variant={'contained'} 
+                        color={'primary'} 
+                        style={{marginRight: 5}}
+                        onClick={() => attendActivity(activity)}
+                    >
                         Yes
                         <Check/>
-                    </Button>
-                    <Button variant={'contained'} color={'secondary'}>
-                        No
+                    </Button> :
+                    <Button 
+                        variant={'contained'} 
+                        color={'secondary'}
+                        onClick={() => cancelAttendance(activity)}
+                    >
+                        Cancel my place
                         <Close/>
-                    </Button>
+                    </Button>}
                     <IconButton
                         className={classnames(classes.expand, {
                             [classes.expandOpen]: this.state.expanded,
                         })}
                         onClick={this.handleExpandClick}
-                        aria-expanded={this.state.expanded}
-                        aria-label="Show more"
                     >
                         <ExpandMore/>
                     </IconButton>
@@ -153,24 +169,14 @@ class Details extends React.Component {
                             <Typography variant={'subtitle1'}>
                                 Attendees
                             </Typography>
-                            <ListItem>
-                                <Avatar>
-                                    <Image/>
-                                </Avatar>
-                                <ListItemText primary={'Host Name'}/>
-                            </ListItem>
-                            <ListItem>
-                                <Avatar>
-                                    <Image/>
-                                </Avatar>
-                                <ListItemText primary={'Host Name'}/>
-                            </ListItem>
-                            <ListItem>
-                                <Avatar>
-                                    <Image/>
-                                </Avatar>
-                                <ListItemText primary={'Host Name'}/>
-                            </ListItem>
+                            {activity.attendees.map((attendee) => (
+                                <ListItem key={attendee.username}>
+                                    <Avatar src={attendee.image}>
+                                        {attendee.username.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                    <ListItemText primary={attendee.username}/>
+                                </ListItem>
+                            ))}
                         </List>
                     </CardContent>
                 </Collapse>
