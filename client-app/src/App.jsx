@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Header} from './Layouts';
 import Activities from './Components/Activities';
 import data from './activities.json';
+import {Provider} from './context';
 
 const categories = [
     'drinks', 'food', 'music', 'culture', 'travel'
@@ -11,7 +12,6 @@ class App extends Component {
     state = {
         activities: data.activities,
         activitiesByDate: [],
-        categories,
         activity: null,
         editMode: false,
         dialogOpen: false
@@ -109,33 +109,38 @@ class App extends Component {
             })
         }));
     };
+
+    getContext = () => ({
+        categories,
+        ...this.state,
+        onActivityCreate: this.handleActivityCreate,
+        dialogToggle: this.handleDialogToggle,
+        cancelFormEdit: this.handleCancelFormEdit
+    });
         
     render() {
         const activitiesByDate = this.getActivitiesByDate();
-        const {activity, editMode, categories, dialogOpen} = this.state;
+        const {activity, editMode, dialogOpen} = this.state;
         return (
-            <div>
-                <Header 
-                    onActivityCreate={this.handleActivityCreate}
-                    categories={categories}
-                    dialogOpen={dialogOpen}
-                    dialogToggle={this.handleDialogToggle}
-                    cancelFormEdit={this.handleCancelFormEdit}
-                />
-                <Activities 
-                    editMode={editMode}
-                    dialogOpen={dialogOpen}
-                    categories={categories}
-                    activitiesByDate={activitiesByDate} 
-                    activity={activity}
-                    onSelect={this.handleActivitySelect}
-                    onSelectEdit={this.handleActivitySelectEdit}
-                    onEdit={this.handleActivityEdit}
-                    cancelFormEdit={this.handleCancelFormEdit}
-                    attendActivity={this.handleActivityAttendance}
-                    cancelAttendance={this.handleCancelAttendance}
-                />
-            </div>
+            <Provider value={this.getContext()}>
+                <div>
+                    <Header />
+                    <Activities
+                        editMode={editMode}
+                        dialogOpen={dialogOpen}
+                        categories={categories}
+                        activitiesByDate={activitiesByDate}
+                        activity={activity}
+                        onSelect={this.handleActivitySelect}
+                        onSelectEdit={this.handleActivitySelectEdit}
+                        onEdit={this.handleActivityEdit}
+                        cancelFormEdit={this.handleCancelFormEdit}
+                        attendActivity={this.handleActivityAttendance}
+                        cancelAttendance={this.handleCancelAttendance}
+                    />
+                </div>
+            </Provider>
+            
         );
     }
 }

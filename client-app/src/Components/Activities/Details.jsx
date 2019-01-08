@@ -84,7 +84,7 @@ class Details extends React.Component {
         if (!host) return <p>Loading...</p>;
 
         return (
-            <Card className={classes.card}>
+            <Card className={classes.card} style={{position: 'sticky'}}>
                 <CardHeader
                     avatar={
                         <Avatar className={classes.avatar} src={host.image}>
