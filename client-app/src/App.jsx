@@ -115,29 +115,22 @@ class App extends Component {
         ...this.state,
         onActivityCreate: this.handleActivityCreate,
         dialogToggle: this.handleDialogToggle,
-        cancelFormEdit: this.handleCancelFormEdit
+        cancelFormEdit: this.handleCancelFormEdit,
+        onSelect: this.handleActivitySelect,
+        onSelectEdit: this.handleActivitySelectEdit,
+        onEdit: this.handleActivityEdit,
+        attendActivity: this.handleActivityAttendance,
+        cancelAttendance: this.handleCancelAttendance,
+        activitiesByDate: this.getActivitiesByDate()
     });
         
     render() {
-        const activitiesByDate = this.getActivitiesByDate();
-        const {activity, editMode, dialogOpen} = this.state;
+        // const activitiesByDate = this.getActivitiesByDate();
         return (
             <Provider value={this.getContext()}>
                 <div>
                     <Header />
-                    <Activities
-                        editMode={editMode}
-                        dialogOpen={dialogOpen}
-                        categories={categories}
-                        activitiesByDate={activitiesByDate}
-                        activity={activity}
-                        onSelect={this.handleActivitySelect}
-                        onSelectEdit={this.handleActivitySelectEdit}
-                        onEdit={this.handleActivityEdit}
-                        cancelFormEdit={this.handleCancelFormEdit}
-                        attendActivity={this.handleActivityAttendance}
-                        cancelAttendance={this.handleCancelAttendance}
-                    />
+                    <Activities />
                 </div>
             </Provider>
             

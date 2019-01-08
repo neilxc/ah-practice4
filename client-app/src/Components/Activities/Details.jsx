@@ -117,7 +117,7 @@ class Details extends React.Component {
 
                     }
                     title={activity.title}
-                    subheader={format(activity.date, 'MMMM D, YYYY [at] h:mm A')}
+                    subheader={format(activity.date, 'MMMM D, YYYY [at] h:mm A', { awareOfUnicodeTokens: true })}
                 />
                 <CardMedia
                     className={classes.media}

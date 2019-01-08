@@ -4,6 +4,7 @@ import Item from './Item';
 import format from 'date-fns/format'
 import Form from "./Form";
 import Details from "./Details";
+import {withContext} from "../../context";
 
 const styles = {
     root: {
@@ -32,7 +33,7 @@ const styles = {
     }
 };
 
-export default ({
+const Activities = ({
                     activitiesByDate,
                     onSelect,
                     activity,
@@ -49,7 +50,7 @@ export default ({
             {activitiesByDate.map(([group, activities]) =>
                 <Fragment key={group}>
                     <Typography variant={'overline'} style={styles.date} gutterBottom>
-                        {format(group, 'dddd D MMMM')}
+                        {format(group, 'dddd D MMMM', { awareOfUnicodeTokens: true })}
                     </Typography>
                     <List>
                         {activities.map((activity) =>
@@ -86,3 +87,5 @@ export default ({
         </Grid>
     </Grid>
 );
+
+export default withContext(Activities);
