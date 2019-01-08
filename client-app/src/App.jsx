@@ -37,9 +37,10 @@ class App extends Component {
     handleActivityCreate = activity => {
         this.setState(({activities}) => ({
             activities: [...activities,
-                activity]
+                activity],
+            dialogOpen: false
         }));
-        this.getActivitiesByDate();
+        
     };
     
     handleActivitySelect = id => 

@@ -143,7 +143,7 @@ class Details extends React.Component {
                         style={{marginRight: 5}}
                         onClick={() => attendActivity(activity)}
                     >
-                        Yes
+                        Sign me up!
                         <Check/>
                     </Button> :
                     <Button 
