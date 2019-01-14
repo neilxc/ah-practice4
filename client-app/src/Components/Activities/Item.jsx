@@ -14,7 +14,7 @@ export default ({activity, onSelect}) =>
             <Grid container>
                 <Grid item sm={2}>
                     <Typography variant={'h6'}>
-                        {format(activity.date, 'h:mm A')}
+                        {format(activity.date, 'h:mm a')}
                     </Typography>
                 </Grid>
                 <Grid item sm={10}>

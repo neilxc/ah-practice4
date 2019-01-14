@@ -1,17 +1,19 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, Component} from 'react';
 import {Grid, Paper, Typography, List} from "@material-ui/core";
 import Item from './Item';
 import format from 'date-fns/format'
 import Form from "./Form";
 import Details from "./Details";
 import {withContext} from "../../context";
+import {inject, observer} from "mobx-react";
 
 const styles = {
     root: {
         display: 'flex',
         flexDirection: 'row wrap',
         padding: 20,
-        width: '100%'
+        width: '100%',
+        marginTop: 60
     },
     paperLeft: {
         flex: 1,
@@ -33,59 +35,73 @@ const styles = {
     }
 };
 
-const Activities = ({
-                    activitiesByDate,
-                    onSelect,
-                    activity,
-                    onSelectEdit,
-                    editMode,
-                    categories,
-                    onEdit,
-                    cancelFormEdit,
-                    attendActivity,
-                    cancelAttendance
-                }) => (
-    <Grid container spacing={16} style={styles.root}>
-        <Grid item xs={6}>
-            {activitiesByDate.map(([group, activities]) =>
-                <Fragment key={group}>
-                    <Typography variant={'overline'} style={styles.date} gutterBottom>
-                        {format(group, 'dddd D MMMM', { awareOfUnicodeTokens: true })}
+@withContext
+@observer
+@inject('activityStore')    
+class Activities extends Component {
+    render() {
+        const {
+            activitiesByDate,
+            onSelect,
+            activity,
+            onSelectEdit,
+            editMode,
+            categories,
+            onEdit,
+            cancelFormEdit,
+            attendActivity,
+            cancelAttendance
+        } = this.props;
+        const {testObservable} = this.props.activityStore;
+        
+        return(
+            <Grid container spacing={16} style={styles.root}>
+
+                <Grid item xs={6}>
+                    <Typography variant={'h6'}>
+                        {testObservable}
                     </Typography>
-                    <List>
-                        {activities.map((activity) =>
-                            <Item
-                                key={activity.id}
+                    {activitiesByDate.map(([group, activities]) =>
+                        <Fragment key={group}>
+                            <Typography variant={'overline'} style={styles.date} gutterBottom>
+                                {format(group, 'EEEE dd MMMM')}
+                            </Typography>
+                            <List>
+                                {activities.map((activity) =>
+                                    <Item
+                                        key={activity.id}
+                                        activity={activity}
+                                        onSelect={onSelect}
+                                    />
+                                )}
+                            </List>
+
+                        </Fragment>
+                    )}
+                </Grid>
+                <Grid item xs={6}>
+                    {editMode
+                        ? <Paper style={styles.paperRight}>
+                            <Form
                                 activity={activity}
-                                onSelect={onSelect}
+                                categories={categories}
+                                onSubmit={onEdit}
+                                cancelFormEdit={cancelFormEdit}
                             />
-                        )}
-                    </List>
+                        </Paper>
+                        : activity ?
+                            <Details
+                                activity={activity}
+                                onSelectEdit={onSelectEdit}
+                                attendActivity={attendActivity}
+                                cancelAttendance={cancelAttendance}
+                            /> : null
+                    }
 
-                </Fragment>
-            )}
-        </Grid>
-        <Grid item xs={6}>
-            {editMode
-                ? <Paper style={styles.paperRight}>
-                    <Form
-                        activity={activity}
-                        categories={categories}
-                        onSubmit={onEdit}
-                        cancelFormEdit={cancelFormEdit}
-                    />
-                </Paper>
-                : activity ?
-                <Details
-                    activity={activity}
-                    onSelectEdit={onSelectEdit}
-                    attendActivity={attendActivity}
-                    cancelAttendance={cancelAttendance}
-                /> : null
-            }
+                </Grid>
+            </Grid>
+        )
+    }
+}
 
-        </Grid>
-    </Grid>
-);
-
-export default withContext(Activities);
+export default Activities;
