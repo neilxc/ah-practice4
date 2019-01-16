@@ -1,5 +1,5 @@
 import React, {Fragment, Component} from 'react';
-import {Grid, Paper, Typography, List} from "@material-ui/core";
+import {Grid, Paper, Typography, List, Button} from "@material-ui/core";
 import Item from './Item';
 import format from 'date-fns/format'
 import Form from "./Form";
@@ -36,12 +36,15 @@ const styles = {
 };
 
 @withContext
+@inject('activityStore')
 @observer
-@inject('activityStore')    
 class Activities extends Component {
+    componentDidMount() {
+        this.props.activityStore.loadActivities();
+    }
+
     render() {
         const {
-            activitiesByDate,
             onSelect,
             activity,
             onSelectEdit,
@@ -50,18 +53,34 @@ class Activities extends Component {
             onEdit,
             cancelFormEdit,
             attendActivity,
-            cancelAttendance
+            cancelAttendance,
+            activityStore: {
+                answer,
+                activitiesFromStore,
+                activitiesByDateFromStore,
+                incrementCounter,
+                decrementCounter,
+                answerDoubled
+            }
         } = this.props;
-        const {testObservable} = this.props.activityStore;
         
         return(
             <Grid container spacing={16} style={styles.root}>
 
                 <Grid item xs={6}>
                     <Typography variant={'h6'}>
-                        {testObservable}
+                        The answer is: {answer}
                     </Typography>
-                    {activitiesByDate.map(([group, activities]) =>
+                    <Typography variant={'h6'}>
+                        The answer doubled is: {answerDoubled}
+                    </Typography>
+                    <Button onClick={incrementCounter} variant="outlined" color="primary">
+                        Increment
+                    </Button>
+                    <Button onClick={decrementCounter} variant="outlined" color="secondary">
+                        Decrement
+                    </Button>
+                    {activitiesByDateFromStore.map(([group, activities]) =>
                         <Fragment key={group}>
                             <Typography variant={'overline'} style={styles.date} gutterBottom>
                                 {format(group, 'EEEE dd MMMM')}
