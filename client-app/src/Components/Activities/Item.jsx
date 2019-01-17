@@ -1,6 +1,7 @@
 import React from 'react';
 import {Typography, Grid, Card, CardActionArea} from "@material-ui/core";
 import format from 'date-fns/format';
+import {observer} from "mobx-react";
 
 const styles = {
     paper: {
@@ -8,7 +9,7 @@ const styles = {
     }
 };
 
-export default ({activity, onSelect}) =>
+export default observer(({activity, onSelect}) =>
     <CardActionArea>
         <Card style={styles.paper} onClick={() => onSelect(activity.id)}>
             <Grid container>
@@ -30,4 +31,4 @@ export default ({activity, onSelect}) =>
                 </Grid>
             </Grid>
         </Card>
-    </CardActionArea>
+    </CardActionArea>)

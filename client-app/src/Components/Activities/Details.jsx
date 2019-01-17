@@ -21,6 +21,7 @@ import classnames from 'classnames';
 import red from '@material-ui/core/colors/red';
 import {Close, ExpandMore, MoreVert, Check} from '@material-ui/icons';
 import format from 'date-fns/format'
+import {inject, observer} from "mobx-react";
 
 const styles = theme => ({
     card: {
@@ -49,6 +50,9 @@ const styles = theme => ({
     },
 });
 
+@withStyles(styles)
+@inject('activityStore')
+@observer
 class Details extends React.Component {
     state = {
         expanded: false,
@@ -65,7 +69,7 @@ class Details extends React.Component {
         });
     
     handleEditClick = (id) => {
-        this.props.onSelectEdit(id);
+        this.props.activityStore.editActivity(id);
         this.handleClose();
     };
 
@@ -75,13 +79,13 @@ class Details extends React.Component {
         });
 
     render() {
-        const {classes, activity, attendActivity, cancelAttendance} = this.props;
+        const {classes, activity, activityStore: {attendActivity, cancelAttendance}} = this.props;
         const {attendees} = activity;
         const {anchorEl} = this.state;
         const host = attendees.filter(a => a.isHost === true)[0];
         const going = attendees.filter(a => a.username === "testuser")[0];
         
-        if (!host) return <p>Loading...</p>;
+        // if (!host) return <p>Loading...</p>;
 
         return (
             <Card className={classes.card} style={{position: 'sticky'}}>
@@ -185,4 +189,4 @@ class Details extends React.Component {
     }
 }
 
-export default withStyles(styles)(Details);
+export default Details;

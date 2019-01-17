@@ -7,12 +7,14 @@ import {
     DialogTitle,
 } from "@material-ui/core";
 import Form from "./Form";
-import {withContext} from '../../context';
+import {inject, observer} from "mobx-react";
 
+@inject('activityStore')
+@observer
 class CreateDialog extends Component {
 
     render() {
-        const {activity, dialogToggle, dialogOpen, categories, onActivityCreate, cancelFormEdit} = this.props;
+        const {activityStore: {dialogToggle, dialogOpen, cancelFormEdit}, onActivityCreate} = this.props;
         return (
             <Fragment>
                 <Button color={'inherit'} onClick={dialogToggle}>
@@ -21,7 +23,6 @@ class CreateDialog extends Component {
                 <Dialog
                     open={dialogOpen}
                     onClose={dialogToggle}
-                    activity={activity}
                 >
                     <DialogTitle id="form-dialog-title">
                         Create a new Activity
@@ -31,9 +32,7 @@ class CreateDialog extends Component {
                             Please fill out the form below
                         </DialogContentText>
                         <Form
-                            categories={categories}
                             onSubmit={onActivityCreate}
-                            activity={activity}
                             cancelFormEdit={cancelFormEdit}
                         />
                     </DialogContent>
@@ -43,4 +42,4 @@ class CreateDialog extends Component {
     }
 }
 
-export default withContext(CreateDialog);
+export default CreateDialog;

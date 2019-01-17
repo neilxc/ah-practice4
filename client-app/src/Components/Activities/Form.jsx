@@ -10,9 +10,8 @@ import {
     Button
 } from "@material-ui/core";
 import format from 'date-fns/format';
-import { DateTimePicker } from 'material-ui-pickers';
-import { MuiPickersUtilsProvider } from 'material-ui-pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import {inject, observer} from "mobx-react";
+import * as Utils from '../../Common/utils';
 
 const styles = theme => ({
     formControl: {
@@ -20,11 +19,14 @@ const styles = theme => ({
     }
 });
 
-export default withStyles(styles)(class extends Component {
+@withStyles(styles)
+@inject('activityStore')
+@observer
+class Form extends Component {
     state = this.getInitState();
 
     getInitState() {
-        const {activity} = this.props;
+        const {activity} = this.props.activityStore;
 
         return activity ? activity : {
             title: '',
@@ -44,34 +46,32 @@ export default withStyles(styles)(class extends Component {
     };
 
     handleSubmit = () => {
-        //TODO: validation
-        this.props.onSubmit({
-            id: this.state.title.toLocaleLowerCase().replace(/ /g, '-'),
-            attendees: [
-                {
-                    "username": "bob",
-                    "dateJoined": "2019-02-04T14:00",
-                    "image": null,
-                    "isHost": true
-                }
-            ],
-            ...this.state,
-        });
-        
-        this.setState(this.getInitState());
-    };
-    
-    renderSelectOptions = () => {
-        return this.props.categories.map((dt, i) => (
-            <MenuItem key={i} value={dt}>
-                {dt}
-            </MenuItem>
-        ))
+        if (this.props.activityStore.activity) {
+            this.props.activityStore.updateActivity(this.state);
+        } else {
+            this.props.activityStore.addActivity({
+                id: Utils.uuid(),
+                attendees: [
+                    {
+                        "username": "bob",
+                        "dateJoined": "2019-02-04T14:00",
+                        "image": null,
+                        "isHost": true  
+                    }
+                ],
+                ...this.state
+            });
+        }
     };
     
     render() {
         const {title, description, category, date, city, venue} = this.state;
-        const {classes, categories, cancelFormEdit, activity} = this.props;
+        const {classes, activityStore: {
+            cancelEditActivity, 
+            activity, 
+            categories
+            }
+        } = this.props;
         return (
             <form>
                 <TextField
@@ -111,8 +111,7 @@ export default withStyles(styles)(class extends Component {
                 <br/>
                 <TextField
                     label="Date"
-                    // defaultValue={format(new Date(), 'YYYY-MM-DDThh:mm')}
-                    value={format(date, 'YYYY-MM-DDThh:mm')}
+                    value={date && format(date, "yyyy-MM-dd'T'H:mm")}
                     type={'datetime-local'}
                     onChange={this.handleChange('date')}
                     margin="normal"
@@ -145,11 +144,13 @@ export default withStyles(styles)(class extends Component {
                 <Button
                     color="secondary"
                     variant={'contained'}
-                    onClick={cancelFormEdit}
+                    onClick={cancelEditActivity}
                 >
                     Cancel
                 </Button>
             </form>
         )
     }
-})
+}
+
+export default Form;
