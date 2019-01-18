@@ -5,35 +5,31 @@ import {
     DialogContentText,
     DialogTitle,
 } from "@material-ui/core";
-import Form from "./Form";
 import {inject, observer} from "mobx-react";
+import LoginForm from "../Components/Auth/LoginForm";
 
-@inject('activityStore')
+@inject('dialogStore')
 @observer
-class CreateDialog extends Component {
-
+class AppDialog extends Component {
     render() {
-        const {activityStore: {dialogToggle, dialogOpen, cancelFormEdit}, onActivityCreate} = this.props;
+        const {dialogStore: {dialogOpen, closeDialog}, children} = this.props;
         return (
             <Dialog
                 open={dialogOpen}
-                onClose={dialogToggle}
+                onClose={closeDialog}
             >
                 <DialogTitle id="form-dialog-title">
-                    Create a new Activity
+                    Some title
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please fill out the form below
+                        Some dialog text
                     </DialogContentText>
-                    <Form
-                        onSubmit={onActivityCreate}
-                        cancelFormEdit={cancelFormEdit}
-                    />
+                    {children}
                 </DialogContent>
             </Dialog>
         )
     }
 }
 
-export default CreateDialog;
+export default AppDialog;

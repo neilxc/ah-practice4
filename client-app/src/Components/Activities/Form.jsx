@@ -20,7 +20,7 @@ const styles = theme => ({
 });
 
 @withStyles(styles)
-@inject('activityStore')
+@inject('activityStore', 'dialogStore')
 @observer
 class Form extends Component {
     state = this.getInitState();
@@ -66,10 +66,15 @@ class Form extends Component {
     
     render() {
         const {title, description, category, date, city, venue} = this.state;
-        const {classes, activityStore: {
-            cancelEditActivity, 
-            activity, 
-            categories
+        const {classes, 
+            activityStore: {
+                cancelEditActivity, 
+                activity, 
+                categories
+            },
+            dialogStore: {
+                closeDialog,
+                currentDialog
             }
         } = this.props;
         return (
@@ -144,7 +149,7 @@ class Form extends Component {
                 <Button
                     color="secondary"
                     variant={'contained'}
-                    onClick={cancelEditActivity}
+                    onClick={currentDialog ? closeDialog : cancelEditActivity}
                 >
                     Cancel
                 </Button>

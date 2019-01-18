@@ -69,7 +69,8 @@ class ActivityStore {
         this.editMode = false;
     };
 
-    @action dialogToggle = () => {
+    @action dialogToggle = (e) => {
+        console.log(e);
         this.activity = null;
         this.dialogOpen = !this.dialogOpen;
     };

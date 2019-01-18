@@ -4,9 +4,17 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import activityStore from './Components/Activities/activityStore';
 import {Provider} from 'mobx-react';
+import commonStore from "./Common/commonStore";
+import userStore from "./Components/Users/userStore";
+import authStore from "./Components/Auth/authStore";
+import dialogStore from "./Components/Dialogs/dialogStore";
 
 const stores = {
-    activityStore
+    activityStore,
+    commonStore,
+    userStore,
+    authStore,
+    dialogStore
 };
 
 ReactDOM.render(
