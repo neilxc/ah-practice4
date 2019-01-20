@@ -25,6 +25,7 @@ class LoginForm extends Component {
                     onChange={this.changeEmail}
                     margin="normal"
                     className={classes.formControl}
+                    autoComplete="username"
                 />
                 <br/>
                 <TextField
@@ -34,6 +35,7 @@ class LoginForm extends Component {
                     onChange={this.changePassword}
                     margin="normal"
                     className={classes.formControl}
+                    autoComplete="current-password"
                 />
                 <br/>
                 <Button

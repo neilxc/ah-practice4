@@ -3,7 +3,7 @@ import {Header} from './Layouts';
 import Activities from './Components/Activities';
 import {inject} from "mobx-react";
 
-@inject('commonStore')
+@inject('commonStore', 'authStore')
 class App extends Component {
     componentWillMount() {
         if (!this.props.commonStore.token) {
@@ -13,8 +13,7 @@ class App extends Component {
     
     componentDidMount() {
         if (this.props.commonStore.token) {
-            // get user from API
-            this.props.commonStore.setAppLoaded();
+            this.props.authStore.getUser().finally(() => this.props.commonStore.setAppLoaded());
         }
     }
 

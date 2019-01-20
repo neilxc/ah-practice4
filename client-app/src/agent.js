@@ -57,6 +57,18 @@ const Auth = {
         requests.post('/users/register', {user: {username, email, password}})
 };
 
+const Activities = {
+    all: () =>
+        requests.get(`/activities`),
+    get: id =>
+        requests.get(`/activities/${id}`),
+    create: activity =>
+        requests.post('/activities', activity),
+    update: activity =>
+        requests.put(`/activities/${activity.id}`, activity)
+};
+
 export default {
-    Auth
+    Auth,
+    Activities
 }
