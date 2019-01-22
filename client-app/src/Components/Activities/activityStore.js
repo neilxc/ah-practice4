@@ -1,17 +1,19 @@
-import data from '../../activities.json';
-import {observable, action, computed} from "mobx";
-import * as Utils from '../../Common/utils';
+import {observable, action, computed, runInAction} from "mobx";
+import agent from '../../agent';
 
-const attendee = {
-    username: "testuser",
-    dateJoined: new Date(),
-    image: null,
-    isHost: false
-};
+// const attendee = {
+//     username: "testuser",
+//     dateJoined: new Date(),
+//     image: null,
+//     isHost: false
+// };
 
 class ActivityStore {
+    @observable isLoading = false;
+    @observable isFailure = false;
+    @observable isLoadingDetail = false;
     @observable activityRegistry = observable(new Map());
-    @observable activity = null;
+    @observable activity;
     @observable editMode = false;
     @observable dialogOpen = false;
     @observable categories = [
@@ -27,24 +29,89 @@ class ActivityStore {
     }
 
     @action loadActivities() {
-        data.activities.forEach(activity => {
-            this.activityRegistry.set(activity.id, activity);
-        })
+        this.isLoading = true;
+        return agent.Activities.all()
+            .then(action(({activities}) => {
+                this.activityRegistry.clear();
+                activities.forEach(activity => {
+                    this.activityRegistry.set(activity.id, activity);
+                })
+            }))
+            .finally(action(() => {this.isLoading = false}))
+    }
+    
+    @action loadActivity(id, {acceptCached = false} = {}) {
+        if (acceptCached) {
+            const activity = this.getActivity(id);
+            if (activity) return Promise.resolve(activity);
+        }
+        this.isLoading = true;
+        return agent.Activities.get(id)
+            .then(action(({activity}) => {
+                this.activityRegistry.set(activity.id, activity);
+                return activity;
+            }))
+            .finally(action(() => {this.isLoading = false}));
     }
 
-    @action addActivity = (activity) => {
-        activity.id = Utils.uuid();
-        this.activityRegistry.set(activity.id, activity);
-        this.dialogOpen = false;
+    @action 
+    async addActivity(activityToCreate) {
+        try {
+            this.isLoading = true;
+            const activity = await agent.Activities.create({activity: activityToCreate});
+            runInAction(() => {
+                this.isLoading = false;
+                this.activityRegistry.set(activity.id, activity);
+            })
+        } catch (e) {
+            this.isLoading = false;
+            this.isFailure = true;
+            console.log(e);
+        }
+    };
+
+    @action 
+    async updateActivity(activityToUpdate) {
+        try {
+            this.isLoading = true;
+            const activity = await agent.Activities.update({activity: activityToUpdate});
+            runInAction(() => {
+                this.isLoading = false;
+                this.activityRegistry.set(activity.id, activity);
+                this.activity = this.getActivity(activity.id);
+                this.editMode = false;
+            })
+        } catch (e) {
+            this.isLoading = false;
+            this.isFailure = true;
+            console.log(e);
+        }
     };
 
     @action selectActivity = (id) => {
         this.activity = this.getActivity(id);
     };
+    
+    @action clearActivity() {
+        this.activity = null;
+    }
 
-    @action attendActivity = (activity) => {
-        activity.attendees.push(attendee);
-        this.activityRegistry.set(activity.id, activity);
+    @action.bound 
+    async attendActivity(activityToAttend) {
+        console.log(activityToAttend);
+        try {
+            this.isLoading = true;
+            const activity = await agent.Activities.attend(activityToAttend);
+            console.log(activity);
+            runInAction(() => {
+                this.isLoading = false;
+                this.activityRegistry.set(activity.id, activity);
+            })
+        } catch (e) {
+            this.isLoading = false;
+            this.isFailure = true;
+            console.log(e);
+        }
     };
 
     @action cancelAttendance = (activity) => {
@@ -61,12 +128,6 @@ class ActivityStore {
     @action cancelEditActivity = (id) => {
         if (id) this.editMode = false;
         this.dialogOpen = false;
-    };
-
-    @action updateActivity = (activity) => {
-        this.activityRegistry.set(activity.id, activity);
-        this.activity = activity;
-        this.editMode = false;
     };
 
     @action dialogToggle = (e) => {

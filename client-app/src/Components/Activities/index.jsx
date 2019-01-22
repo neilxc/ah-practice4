@@ -45,8 +45,6 @@ class Activities extends Component {
 
     render() {
         const {
-            onEdit,
-            cancelFormEdit,
             activityStore: {
                 activitiesByDateFromStore,
                 selectActivity,
@@ -82,14 +80,10 @@ class Activities extends Component {
                         ? <Paper style={styles.paperRight}>
                             <Form
                                 activity={activity}
-                                onSubmit={onEdit}
-                                cancelFormEdit={cancelFormEdit}
                             />
                         </Paper>
                         : activity ?
-                            <Details
-                                activity={activity}
-                            /> : null
+                            <Details /> : null
                     }
 
                 </Grid>

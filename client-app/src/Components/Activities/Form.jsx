@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import format from 'date-fns/format';
 import {inject, observer} from "mobx-react";
-import * as Utils from '../../Common/utils';
 
 const styles = theme => ({
     formControl: {
@@ -50,17 +49,12 @@ class Form extends Component {
             this.props.activityStore.updateActivity(this.state);
         } else {
             this.props.activityStore.addActivity({
-                id: Utils.uuid(),
-                attendees: [
-                    {
-                        "username": "bob",
-                        "dateJoined": "2019-02-04T14:00",
-                        "image": null,
-                        "isHost": true  
-                    }
-                ],
+                geoCoordinate: {
+                    latitude: 51.508530,
+                    longitude: -0.076132
+                },
                 ...this.state
-            });
+            }).then(() => this.console.log('activity added'));
         }
     };
     

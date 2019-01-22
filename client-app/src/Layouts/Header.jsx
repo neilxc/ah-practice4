@@ -9,9 +9,13 @@ const styles = {
     }
 };
 
-@inject('dialogStore', 'authStore')
+@inject('dialogStore', 'authStore', 'activityStore')
 @observer
 class Header extends Component {
+    handleCreateActivityDialog = () => {
+        this.props.activityStore.clearActivity();
+        this.props.dialogStore.openDialog('CreateActivityDialog')
+    };
     render() {
         const isLoggedIn = !!this.props.authStore.currentUser;
         const {openDialog} = this.props.dialogStore;
@@ -29,11 +33,6 @@ class Header extends Component {
                             >
                                 Login
                             </Button>
-                            <Button color={'inherit'}
-                                    onClick={() => openDialog('CreateActivityDialog')}
-                            >
-                                Create Activity
-                            </Button>
                         </Fragment>
                         :
                         <Fragment>
@@ -44,6 +43,11 @@ class Header extends Component {
                                     onClick={logout}
                             >
                                 Logout
+                            </Button>
+                            <Button color={'inherit'}
+                                    onClick={() => this.handleCreateActivityDialog()}
+                            >
+                                Create Activity
                             </Button>
                         </Fragment>}
 

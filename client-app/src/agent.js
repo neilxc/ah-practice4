@@ -36,7 +36,7 @@ const requests = {
             .then(responseBody),
     put: (url, body) =>
         superagent
-            .post(`${API_ROOT}${url}`, body)
+            .put(`${API_ROOT}${url}`, body)
             .use(tokenPlugin)
             .end(handleErrors)
             .then(responseBody),
@@ -65,7 +65,11 @@ const Activities = {
     create: activity =>
         requests.post('/activities', activity),
     update: activity =>
-        requests.put(`/activities/${activity.id}`, activity)
+        requests.put(`/activities/${activity.activity.id}`, activity),
+    attend: activity =>
+        requests.post(`/activities/${activity.id}/attend`, {}),
+    cancelAttendance: activity =>
+        requests.del(`/activities/${activity.id}/attend`)
 };
 
 export default {
