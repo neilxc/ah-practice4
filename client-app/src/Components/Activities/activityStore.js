@@ -1,4 +1,5 @@
 import {observable, action, computed, runInAction} from "mobx";
+import authStore from '../../Components/Auth/authStore';
 import agent from '../../agent';
 
 // const attendee = {
@@ -98,14 +99,13 @@ class ActivityStore {
 
     @action.bound 
     async attendActivity(activityToAttend) {
-        console.log(activityToAttend);
         try {
             this.isLoading = true;
             const activity = await agent.Activities.attend(activityToAttend);
-            console.log(activity);
             runInAction(() => {
                 this.isLoading = false;
                 this.activityRegistry.set(activity.id, activity);
+                this.activity = this.getActivity(activity.id);
             })
         } catch (e) {
             this.isLoading = false;
@@ -114,10 +114,21 @@ class ActivityStore {
         }
     };
 
-    @action cancelAttendance = (activity) => {
-        const username = 'testuser';
-        activity.attendees = activity.attendees.filter(a => a.username !== username);
-        this.activityRegistry.set(activity.id, activity);
+    @action.bound 
+    async cancelAttendance(activity) {
+        try {
+            this.isLoading = true;
+            await agent.Activities.cancelAttendance(activity);
+            runInAction(() => {
+                this.isLoading = false;
+                activity.attendees = activity.attendees.filter(a => a.username !== authStore.currentUser.username);
+                this.activityRegistry.set(activity.id, activity);
+            })
+        } catch (e) {
+            this.isLoading = false;
+            this.isFailure = true;
+            console.log(e);
+        }
     };
 
     @action editActivity = (id) => {

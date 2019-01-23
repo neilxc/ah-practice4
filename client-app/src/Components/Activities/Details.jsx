@@ -51,7 +51,7 @@ const styles = theme => ({
 });
 
 @withStyles(styles)
-@inject('activityStore')
+@inject('activityStore', 'authStore')
 @observer
 class Details extends React.Component {
     state = {
@@ -83,7 +83,7 @@ class Details extends React.Component {
         const {attendees} = activity;
         const {anchorEl} = this.state;
         const host = attendees.filter(a => a.isHost === true)[0];
-        const going = attendees.filter(a => a.username === "testuser")[0];
+        const going = attendees.filter(a => a.username === this.props.authStore.currentUser.username)[0];
         
         if (!host) return <p>Loading...</p>;
 

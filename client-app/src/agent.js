@@ -42,7 +42,7 @@ const requests = {
             .then(responseBody),
     del: url =>
         superagent
-            .get(`${API_ROOT}${url}`)
+            .del(`${API_ROOT}${url}`)
             .use(tokenPlugin)
             .end(handleErrors)
             .then(responseBody),
