@@ -1,6 +1,8 @@
 import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
 import commonStore from './Common/commonStore';
+import authStore from './Components/Auth/authStore';
+import {toDate} from 'date-fns';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
@@ -17,7 +19,17 @@ const responseBody = res => res.body;
 
 const tokenPlugin = req => {
     if (commonStore.token) {
-        req.set('Authorization', `Bearer ${commonStore.token}`);
+        const refreshThreshold = toDate(new Date().getTime());
+        const tokenExpiry = toDate(commonStore.tokenExpiry * 1000);
+        if (refreshThreshold > tokenExpiry) {
+            console.log('we need to refresh the token');
+            authStore.refresh()
+                .then(req.set('Authorization', `Bearer ${commonStore.token}`))
+        } else {
+            console.log('token is valid - no need to refresh');
+            req.set('Authorization', `Bearer ${commonStore.token}`);
+        }
+
     }
 };
 
@@ -28,9 +40,21 @@ const requests = {
             .use(tokenPlugin)
             .end(handleErrors)
             .then(responseBody),
+    refresh: (url, body) => 
+        superagent
+            .post(`${API_ROOT}${url}`, body)
+            .end(handleErrors)
+            .then(responseBody),
     post: (url, body) =>
         superagent
             .post(`${API_ROOT}${url}`, body)
+            .use(tokenPlugin)
+            .end(handleErrors)
+            .then(responseBody),
+    postForm: (url, formdata) =>
+        superagent
+            .post(`${API_ROOT}${url}`)
+            .attach('Photo.File', formdata)
             .use(tokenPlugin)
             .end(handleErrors)
             .then(responseBody),
@@ -54,12 +78,30 @@ const Auth = {
     login: (email, password) =>
         requests.post('/users/login', {user: {email, password}}),
     register: (username, email, password) =>
-        requests.post('/users/register', {user: {username, email, password}})
+        requests.post('/users', {user: {username, email, password}}),
+    refresh: (token, refreshToken) =>
+        requests.refresh('/users/refresh', {tokenData: {token, refreshToken}}),
+    verifyEmail: (userId, code) =>
+        requests.get(`/users/verifyEmail?${userId}&${code}`),
+    forgotPassword: (email, returnUrl) =>
+        requests.post('/users/forgotPassword', {email, returnUrl}),
+    resetPassword: (email, password, code) =>
+        requests.post('/users/resetPassword', {email, password, code}),
+    changePassword: (currentPassword, newPassword) =>
+        requests.post('/users/changePassword', {currentPassword, newPassword})
 };
 
+const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
+
 const Activities = {
-    all: () =>
-        requests.get(`/activities`),
+    all: (page, lim = 10) =>
+        requests.get(`/activities?${limit(lim, page)}`),
+    byHost: (host, page) =>
+        requests.get(`/activities?host=${host}&${limit(10, page)}`),
+    byUserGoing: (going, page, lim = 10) =>
+        requests.get(`/activities?going=${going}&${limit(lim, page)}`),
+    byStartDate: (startDate, page, lim = 10) =>
+        requests.get(`/activities?startDate=${startDate}&${limit(lim, page)}`),
     get: id =>
         requests.get(`/activities/${id}`),
     create: activity =>
@@ -72,7 +114,29 @@ const Activities = {
         requests.del(`/activities/${activity.id}/attend`)
 };
 
+const User = {
+    addPhoto: (photo) =>
+        requests.postForm(`/photos`, photo),
+    deletePhoto: (photo) =>
+        requests.del(`/photos/${photo.id}`),
+    setMainPhoto: (photo) =>
+        requests.post(`/photos/${photo.id}`),
+    updateUser: (user) =>
+        requests.put(`/user`, {user})
+};
+
+const Comments = {
+    add: (id, body) =>
+        requests.post(`/activities/${id}/comments`, {comment: body}),
+    get: id =>
+        requests.get(`/activities/${id}/comments`),
+    delete: (activityId, commentId) =>
+        requests.del(`/activities/${activityId}/comments/${commentId}`)
+};
+
 export default {
     Auth,
-    Activities
+    Activities,
+    User,
+    Comments
 }

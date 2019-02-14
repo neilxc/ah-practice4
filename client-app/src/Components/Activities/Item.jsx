@@ -1,34 +1,42 @@
 import React from 'react';
-import {Typography, Grid, Card, CardActionArea} from "@material-ui/core";
-import format from 'date-fns/format';
 import {observer} from "mobx-react";
-
-const styles = {
-    paper: {
-        padding: 10
-    }
-};
+import {Link} from "react-router-dom";
+import {Button, Icon, Image, Item, List, Segment} from "semantic-ui-react";
+import {format} from 'date-fns'
 
 export default observer(({activity, onSelect}) =>
-    <CardActionArea>
-        <Card style={styles.paper} onClick={() => onSelect(activity.id)}>
-            <Grid container>
-                <Grid item sm={2}>
-                    <Typography variant={'h6'}>
-                        {format(activity.date, 'h:mm a')}
-                    </Typography>
-                </Grid>
-                <Grid item sm={10}>
-                    <Typography variant={'h6'} >
-                        {activity.title}
-                    </Typography>
-                    <Typography variant={'subtitle1'}>
-                        {activity.description}
-                    </Typography>
-                    <Typography variant={'body1'} color={'secondary'}>
-                        {activity.attendees.length} {activity.attendees.length === 1 ? 'member is' : 'members are'} going to this activity
-                    </Typography>
-                </Grid>
-            </Grid>
-        </Card>
-    </CardActionArea>)
+    <Segment.Group>
+        <Segment>
+            <Item.Group>
+                <Item>
+                    <Item.Image size={'tiny'} circular src={activity.attendees.filter(a => a.isHost)[0].image ||'assets/user.png'}/>
+                    <Item.Content>
+                        <Item.Header as={Link} to={`/activities/${activity.id}`}>{activity.title}</Item.Header>
+                        <Item.Description>
+                            Hosted by {activity.attendees.filter(a => a.isHost)[0].username}
+                        </Item.Description>
+                    </Item.Content>
+                </Item>
+            </Item.Group>
+        </Segment>
+        <Segment>
+            <span>
+                <Icon name={'clock'}/> {format(activity.date, 'EEEE do LLLL')}
+                <Icon name={'marker'}/> {activity.venue}
+            </span>
+        </Segment>
+        <Segment secondary>
+            <List horizontal>
+                {activity.attendees.map((attendee) => (
+                    <List.Item key={attendee.username}>
+                        <Image size={'mini'} circular src={attendee.image || '/assets/user.png'}/>
+                    </List.Item>
+                ))}
+            </List>
+        </Segment>
+        <Segment clearing>
+            <span>{activity.description}</span>
+            <Button as={Link} to={`/activities/${activity.id}`} color="teal" floated="right" content="View" />
+        </Segment>
+    </Segment.Group>
+)

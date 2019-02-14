@@ -1,58 +1,56 @@
 import React, {Component} from 'react';
-import {Button, TextField, withStyles} from "@material-ui/core";
 import {inject, observer} from "mobx-react";
+import {Form, Button, Divider, Icon} from "semantic-ui-react";
+import form from './loginFormSetup';
+import TextInput from "../../Common/form/inputs/TextInput";
+import {Link, withRouter} from "react-router-dom";
+import ForgotPassword from "../Settings/ForgotPassword";
 
-const styles = theme => ({
-    formControl: {
-        width: 500
-    }
-});
-
-@withStyles(styles)
-@inject('authStore', 'dialogStore')
+@withRouter
+@inject('authStore', 'modalStore')
 @observer
 class LoginForm extends Component {
-    changeEmail = e => this.props.authStore.setEmail(e.target.value);
-    changePassword = e => this.props.authStore.setPassword(e.target.value);
+    handleForgotPassword = () => {
+        this.props.modalStore.closeModal();
+        this.props.history.push('/forgotPassword');
+    };
     
     render() {
-        const {classes, authStore: {email, password, login}} = this.props;
+        const {openModal} = this.props.modalStore;
         return (
-            <form>
-                <TextField
-                    label="Email"
-                    value={email}
-                    onChange={this.changeEmail}
-                    margin="normal"
-                    className={classes.formControl}
-                    autoComplete="username"
-                />
-                <br/>
-                <TextField
-                    label="Password"
-                    value={password}
-                    type="password"
-                    onChange={this.changePassword}
-                    margin="normal"
-                    className={classes.formControl}
-                    autoComplete="current-password"
-                />
-                <br/>
+            <Form>
+                <TextInput field={form.$('email')} type={'text'} label={'Email'}/>
+                <TextInput field={form.$('password')} type={'password'} label={'Password'}/>
                 <Button
-                    color="primary"
-                    variant={'contained'}
-                    onClick={login}
+                    onClick={form.onSubmit}
+                    fluid
+                    size={'large'}
+                    color={'teal'}
                 >
                     Login
                 </Button>
+                <a onClick={() =>
+                    openModal({
+                        component: <ForgotPassword/>,
+                        header: 'Enter your email address to get a reset password link'
+                    })}>
+                    Forgot Password?
+                </a>
+                <Divider horizontal>Or</Divider>
                 <Button
-                    color="secondary"
-                    variant={'contained'}
-                    onClick={this.props.dialogStore.closeDialog}
+                    type="button"
+                    style={{ marginBottom: '10px' }}
+                    fluid
+                    color="facebook"
                 >
-                    Cancel
+                    <Icon name="facebook" /> Login with Facebook
                 </Button>
-            </form>
+
+                <Button type="button" fluid color="google plus">
+                    <Icon name="google plus" />
+                    Login with Google
+                </Button>
+            </Form>
         )
     }
 }
