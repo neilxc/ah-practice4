@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, Header, Segment} from "semantic-ui-react";
+import {Form, Header, Segment} from "semantic-ui-react";
 import forms from "../../Common/form/forms";
 import TextInput from "../../Common/form/inputs/TextInput";
 import SubmitButton from "../../Common/form/controls/SubmitButton";

@@ -23,7 +23,9 @@ class PhotosPage extends Component {
         files: [],
         fileName: '',
         cropResult: null,
-        image: {}
+        image: {},
+        target: null,
+        loadingSelected: null
     };
 
     cancelCrop = () => {
@@ -43,7 +45,8 @@ class PhotosPage extends Component {
         }
     };
 
-    handlePhotoDelete = (photo) => async () => {
+    handlePhotoDelete = (photo) => async (e) => {
+        this.setState({target: e.target.name});
         try {
             await this.props.userStore.deletePhoto(photo);
         } catch (error) {
@@ -51,7 +54,8 @@ class PhotosPage extends Component {
         }
     };
 
-    handleSetMainPhoto = (photo) => async () => {
+    handleSetMainPhoto = (photo) => async (e) => {
+        this.setState({target: e.target.name});
         try {
             await this.props.userStore.setMainPhoto(photo);
         } catch (error) {
@@ -60,10 +64,6 @@ class PhotosPage extends Component {
     };
 
     cropImage = () => {
-        if (typeof this.refs.cropper.getCroppedCanvas() === 'undefined') {
-            return;
-        }
-
         this.refs.cropper.getCroppedCanvas().toBlob(blob => {
             let imageUrl = URL.createObjectURL(blob);
             this.setState({
@@ -74,6 +74,7 @@ class PhotosPage extends Component {
     };
 
     onDrop = files => {
+        console.log(files);
         this.setState({
             files: files.map(file => Object.assign(file, {preview: URL.createObjectURL(file)})),
             fileName: files[0].name
@@ -83,7 +84,7 @@ class PhotosPage extends Component {
     };
 
     render() {
-        const {loading, authStore: {currentUser}} = this.props;
+        const {authStore: {currentUser}, userStore: {uploadingPhoto, loading}} = this.props;
         let filteredPhotos;
         if (currentUser && currentUser.photos) {
             filteredPhotos = currentUser.photos.filter(photo => {
@@ -108,7 +109,6 @@ class PhotosPage extends Component {
                                     </div>
                                 )
                             }}
-
                         </Dropzone>
                     </Grid.Column>
                     <Grid.Column width={1}/>
@@ -141,14 +141,14 @@ class PhotosPage extends Component {
                                 />
                                 <Button.Group>
                                     <Button
-                                        loading={this.props.userStore.uploadingPhoto}
+                                        loading={uploadingPhoto}
                                         onClick={this.uploadImage}
                                         style={{width: '100px'}}
                                         positive
                                         icon="check"
                                     />
                                     <Button
-                                        disabled={this.props.userStore.uploadingPhoto}
+                                        disabled={uploadingPhoto}
                                         onClick={this.cancelCrop}
                                         style={{width: '100px'}}
                                         icon="close"
@@ -160,6 +160,7 @@ class PhotosPage extends Component {
                 </Grid>
 
                 <Divider/>
+
                 {currentUser &&
                 <Fragment>
                     <Header sub color="teal" content="All Photos"/>
@@ -172,11 +173,24 @@ class PhotosPage extends Component {
                             <Card key={photo.id}>
                                 <Image src={photo.url}/>
                                 <div className="ui two buttons">
-                                    <Button loading={loading} onClick={this.handleSetMainPhoto(photo)} basic
-                                            color="green">
+                                    <Button
+                                        disabled={loading}    
+                                        name={photo.id}
+                                        loading={+this.state.target === photo.id && loading} 
+                                        onClick={this.handleSetMainPhoto(photo)} 
+                                        basic
+                                        color="green"
+                                    >
                                         Main
                                     </Button>
-                                    <Button onClick={this.handlePhotoDelete(photo)} basic icon="trash" color="red"/>
+                                    <Button
+                                        disabled={loading}
+                                        name={photo.id}
+                                        loading={+this.state.target === photo.id && loading}
+                                        onClick={this.handlePhotoDelete(photo)} 
+                                        basic icon="trash" 
+                                        color="red"
+                                    />
                                 </div>
                             </Card>
                         ))}

@@ -3,6 +3,7 @@ using Application.Comments;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
@@ -23,6 +24,7 @@ namespace Application.Tests.Comments
         {
             // arrange
             var userAccessor = new Mock<IUserAccessor>();
+            var chatHub = new Mock<IHubContext<ChatHub, IChatHub>>();
             userAccessor.Setup(u => u.GetCurrentUsername()).Returns("test");
         
             var context = GetDbContext();
@@ -48,7 +50,7 @@ namespace Application.Tests.Comments
             };
         
             // act
-            var sut = new Create.Handler(context, userAccessor.Object, _mapper);
+            var sut = new Create.Handler(context, userAccessor.Object, _mapper, chatHub.Object);
             var result = sut.Handle(command, CancellationToken.None).Result;
 
             var activity = context.Activities.FirstOrDefaultAsync(x => x.Id == 1).Result;

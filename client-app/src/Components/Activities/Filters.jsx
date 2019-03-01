@@ -1,47 +1,63 @@
 import React, {Component} from 'react';
 import {Header, Grid, Menu} from "semantic-ui-react";
-import DatePicker from "react-datepicker";
 import {inject, observer} from "mobx-react";
+import { Calendar } from 'react-widgets'
 
-@inject('activityStore')
-@observer    
+@inject('activityStore', 'authStore')
+@observer
 class Filters extends Component{
     state = {
-        startDate: new Date()
+        activeItem: 'all'
     };
-    
+
     handleDateChange = (date) => {
+        this.setState({activeItem: null});
         this.props.activityStore.setPredicate({startDate: date.toISOString()});
-        this.setState({
-            startDate: date
-        })
     };
-    
+
+    handleItemClick = (e, {name}) => {
+        console.log(name);
+        this.setState({activeItem: name});
+        if (name === 'username' || name === 'host') {
+            this.props.activityStore.setPredicate({[name]: this.props.authStore.currentUser.username})
+        } else {
+            this.props.activityStore.setPredicate({[name]: true});
+        }
+    };
+
     render() {
-        const {setPredicate} = this.props.activityStore;
+        const {activeItem} = this.state;
         return (
             <Grid.Column width={4}>
                 <Menu vertical size={'large'} style={{width: '100%', marginTop: 30}}>
-                    <Header icon={'filter'} attached inverted color={'grey'} content={'Filters'}/>
-                    <Menu.Item onClick={() => setPredicate({all: true})} name={'allActivities'}>All Activities</Menu.Item>
-                    <Menu.Item onClick={() => setPredicate({going: true})} name={'going'}>I'm Going</Menu.Item>
-                    <Menu.Item onClick={() => setPredicate({host: true})} name={'hosting'}>I'm Hosting</Menu.Item>
+                    <Header icon={'filter'} attached color={'teal'} content={'Filters'}/>
+                    <Menu.Item
+                        active={activeItem === 'all'}
+                        onClick={this.handleItemClick}
+                        color={'blue'}
+                        name={'all'}
+                        content={'All Activities'}
+                    />
+                    <Menu.Item
+                        active={activeItem === 'username'}
+                        onClick={this.handleItemClick}
+                        color={'blue'}
+                        name={'username'}
+                        content={"I'm Going"}
+                    />
+                    <Menu.Item
+                        active={activeItem === 'host'}
+                        onClick={this.handleItemClick}
+                        color={'blue'}
+                        name={'host'}
+                        content={"I'm hosting"}
+                    />
                 </Menu>
-                <DatePicker
-                    dropdownMode={'select'}
-                    onChange={this.handleDateChange}
-                    selected={this.state.startDate}
-                    dateFormat="yyyy/MM/dd"
-                    inline
-                    todayButton={'Today'}
-                    // calendarClassName="custom-date-picker" 
-                />
+                <Header icon={'calendar'} attached color={'teal'} content={'Select Date'}/>
+                <Calendar onChange={this.handleDateChange}/>
             </Grid.Column>
         )
     }
 }
 
 export default Filters;
-
-
-    

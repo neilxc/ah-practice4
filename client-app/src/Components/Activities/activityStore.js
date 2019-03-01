@@ -1,9 +1,10 @@
 import {observable, action, computed, runInAction, reaction} from "mobx";
 import authStore from '../../Components/Auth/authStore';
-import commonStore from '../../Common/commonStore';
 import agent from '../../agent';
 import {HubConnectionBuilder, LogLevel} from "@aspnet/signalr";
 import {history} from '../../Common/RouterHistory';
+
+const LIMIT = 3;
 
 class ActivityStore {
     constructor() {
@@ -13,9 +14,13 @@ class ActivityStore {
         )
     }
     
+    @observable loading = false;
     @observable isFailure = false;
     @observable hubConnection = null;
     @observable activityRegistry = observable(new Map());
+    @observable activityCount = 0;
+    @observable page = 1;
+    @observable totalPagesCount = 0;
     @observable activity = {
         attendees: [],
         comments: []
@@ -32,9 +37,7 @@ class ActivityStore {
     ];
     @observable isGoing;
     @observable username = null;
-    @observable page = 0;
     @observable predicate = {};
-
     @computed get activities() {
         return Array.from(this.activityRegistry.values());
     }
@@ -54,7 +57,7 @@ class ActivityStore {
             .build();
 
         this.hubConnection.start()
-            .then(() => console.log('Connection started!'))
+            .then(() => console.log(this.hubConnection.id))
             .catch(err => console.log('Error while establishing connection : ', err));
         
         this.hubConnection.on('SendComment', (comment) => {
@@ -63,9 +66,14 @@ class ActivityStore {
         });
     };
     
+    @action stopHubConnection = () => {
+        this.hubConnection.stop();
+    };
+    
     @action clear() {
         this.activityRegistry.clear();
-        this.page = 0;
+        this.activityCount = 0;
+        this.page = 1;
     }
     
     @action setPage(page) {
@@ -73,28 +81,32 @@ class ActivityStore {
     }
     
     @action setPredicate = (predicate) => {
+        console.log(predicate);
         if (JSON.stringify(predicate) === JSON.stringify(this.predicate)) return;
         this.clear();
         this.predicate = predicate;
     };
     
     $req() {
-        if (this.predicate.host) return agent.Activities.byHost(this.predicate.host, this.page);
-        if (this.predicate.going) return agent.Activities.byUserGoing(this.predicate.going, this.page);
-        if (this.predicate.startDate) return agent.Activities.byStartDate(this.predicate.startDate, this.page);
-        return agent.Activities.all(this.page)
+        if (this.predicate.host) return agent.Activities.byHost(this.predicate.host, this.page, LIMIT);
+        if (this.predicate.going) return agent.Activities.byUserGoing(this.predicate.going, this.page, LIMIT);
+        if (this.predicate.startDate) return agent.Activities.byStartDate(this.predicate.startDate, this.page, LIMIT);
+        if (this.predicate.username) return agent.Activities.byUsername(this.predicate.username, this.predicate.date, this.page, LIMIT);
+        return agent.Activities.all(this.page, LIMIT)
     }
 
     @action loadActivities() {
-        commonStore.asyncLoading++;
+        this.loading = true;
         return this.$req()
-            .then(action(({activities}) => {
+            .then(action(({activities, activityCount}) => {
                 this.activityRegistry.clear();
+                this.activityCount = activityCount;
+                this.totalPagesCount = Math.ceil(activityCount / LIMIT);
                 activities.forEach(activity => {
                     this.activityRegistry.set(activity.id, activity);
-                })
+                });
             }))
-            .finally(action(() => {commonStore.asyncLoading--}))
+            .finally(action(() => {this.loading = false}))
     }
     
     @action.bound loadActivity(id, {acceptCached = false} = {}) {
@@ -107,30 +119,33 @@ class ActivityStore {
             } 
         }
         console.log('not found in cache, sending request to api');
-        commonStore.asyncLoading++;
+        this.loading = true;
         return agent.Activities.get(id)
             .then(action((activity) => {
                 this.activityRegistry.set(activity.id, activity);
                 this.activity = activity;
+                this.loading = false;
                 return activity;
             }))
             .finally(action(() => {
-                commonStore.asyncLoading--;
+                this.loading = false;
             }));
     }
 
     @action 
     async addActivity(activityToCreate) {
         try {
-            console.log('about to add activity');
-            const activity = await agent.Activities.create({activity: activityToCreate});
+            this.loading = true;
+            const activity = await agent.Activities.create(activityToCreate);
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
             });
             history.push('/activities');
+            this.loading = false;
             return activity;
         } catch (e) {
             this.isFailure = true;
+            this.loading = false;
             console.log(e);
         }
     };
@@ -139,13 +154,16 @@ class ActivityStore {
     async updateActivity(activityToUpdate) {
         console.log('update activity fired');
         try {
-            const activity = await agent.Activities.update({activity: activityToUpdate});
+            this.loading = true;
+            const activity = await agent.Activities.update(activityToUpdate);
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
                 this.activity = this.getActivity(activity.id);
             });
+            this.loading = false;
             return activity;
         } catch (e) {
+            this.loading = false;
             this.isFailure = true;
             console.log(e);
         }
@@ -211,7 +229,7 @@ class ActivityStore {
     
     @action addComment = async (body) => {
         try {
-            const res = await agent.Comments.add(this.activity.id, body);
+            await agent.Comments.add(this.activity.id, body);
             // this.activity.comments.push(res);
         } catch (err) {
             console.log(err)

@@ -1,16 +1,9 @@
-import _ from 'lodash';
+import agent from '../../../agent';
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-export default (query = {}) => {
-    // assume these usernames are in the database
-    const db = [
-        { user: 'Claudio' },
-        { user: 'FoxHound' },
-        { user: 'SteveJobs' },
-    ];
-
-    return sleep(1500)
-        .then(() => console.log('async call ...'))
-        .then(() => _.find(db, query) || []);
+const asyncRules = {
+    checkEmail: (value, attr, key, passes) => {
+        const msg = `The email address ${value} is already in use... please login instead with that email`;
+        agent.User.checkEmail(value)
+            .then((result) => (result === false) ? passes() : passes(false, msg));
+    }
 };

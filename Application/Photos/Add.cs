@@ -17,14 +17,14 @@ namespace Application.Photos
 {
     public class Add
     {
-        public class PhotoData
-        {
-            public IFormFile File { get; set; }
-        }
+//        public class PhotoData
+//        {
+//            public IFormFile File { get; set; }
+//        }
 
         public class Command : IRequest<Photo>
         {
-            public PhotoData Photo { get; set; }
+            public IFormFile File { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Photo>
@@ -45,7 +45,7 @@ namespace Application.Photos
 
             public async Task<Photo> Handle(Command request, CancellationToken cancellationToken)
             {                
-                var result = _cloudinaryAccessor.AddPhoto(request.Photo.File);
+                var result = _cloudinaryAccessor.AddPhoto(request.File);
                 
                 var user = await _context.Users.Include(p => p.Photos)
                     .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);

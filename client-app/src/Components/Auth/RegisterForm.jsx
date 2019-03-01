@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 import {Button, Divider, Icon, Form} from "semantic-ui-react";
 import {observer} from "mobx-react";
 import TextInput from "../../Common/form/inputs/TextInput";
-import form from './registerFormSetup';
+import forms from '../../Common/form/forms';
+
+const form = forms.register;
 
 @observer
 class RegisterForm extends Component {
     render() {
+        console.log(form);
         return (
             <Form>
                 <TextInput field={form.$('username')} type={'text'}/>

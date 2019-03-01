@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
-using Application.Comments;
 
-namespace Application.Interfaces
+namespace Application.Comments
 {
     public interface IChatHub
     {

@@ -1,14 +1,17 @@
 import React from 'react'
 import { Menu, Button } from 'semantic-ui-react'
-import registerForm from '../Components/Auth/registerFormSetup';
-import loginForm from '../Components/Auth/loginFormSetup';
+import loginForm from '../Common/form/setup/loginFormSetup';
+import RegisterForm from "../Components/Auth/RegisterForm";
 
 const LoggedOutMenu = ({openModal}) => {
     return (
         <Menu.Item position="right">
             <Button onClick={() => openModal('LoginModal', {loginForm})} basic inverted content="Login" />
             <Button
-                onClick={() => openModal('RegisterModal', {registerForm})}
+                onClick={() => openModal({
+                    component: <RegisterForm/>,
+                    header: 'Register for the Activity Hub'
+                })}
                 basic
                 inverted
                 content="Register"

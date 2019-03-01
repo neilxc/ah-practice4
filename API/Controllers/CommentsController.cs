@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Route("api/activities")]
     public class CommentsController : BaseController
     {
         [HttpPost("{activityId}/comments")]

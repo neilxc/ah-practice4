@@ -34,15 +34,17 @@ namespace API.Middleware
         private async Task HandleExceptionAsync(HttpContext context, 
             Exception ex, ILogger<ErrorHandlingMiddleware> logger)
         {
-            object errors = null;
-
+            object errors = null;    
+        
             switch (ex)    
             {
                     case RestException re:
+                        logger.LogError(ex, "APP ERROR");
                         errors = re.Errors;
                         context.Response.StatusCode = (int) re.Code;
                         break;
                     case Exception e:
+                        logger.LogError(ex, "SERVER ERROR");
                         errors = string.IsNullOrWhiteSpace(e.Message) ? "Error" : e.Message;
                         context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                         break;

@@ -1,26 +1,22 @@
-import simulateAsyncFindUserCall from './async';
+import agent from '../../../agent';
 
 const asyncRules = {
-    checkUser: (value, attr, key, passes) => {
-        const msg = `Hey! The username ${value} is already taken.`;
-        // show error if the call does not returns entries
-        simulateAsyncFindUserCall({ user: value })
-            .then(items => (items.length === 0) ? passes() : passes(false, msg));
-    },
+    checkEmail: (value, attr, key, passes) => {
+        const msg = `The email address ${value} is already in use... please login instead with that email`;
+        agent.User.checkEmail(value)
+            .then((result) => (result === false) ? passes() : passes(false, msg));
+    }
 };
 
-const rules = {
-    telephone: {
-        function: value => value.match(/^\d{3}-\d{3}-\d{4}$/),
-        message: 'The :attribute phone number is not in the format XXX-XXX-XXXX.',
-    },
-};
+// const rules = {
+//     telephone: {
+//         function: value => value.match(/^\d{3}-\d{3}-\d{4}$/),
+//         message: 'The :attribute phone number is not in the format XXX-XXX-XXXX.',
+//     },
+// };
 
 export default ($validator) => {
     // register async rules
     Object.keys(asyncRules).forEach(key =>
         $validator.registerAsyncRule(key, asyncRules[key]));
-    // register sync rules
-    Object.keys(rules).forEach(key =>
-        $validator.register(key, rules[key].function, rules[key].message));
 };

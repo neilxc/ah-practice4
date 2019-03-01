@@ -2,13 +2,13 @@ import React from 'react'
 import { Form, Label } from 'semantic-ui-react'
 import {observer} from "mobx-react";
 
-export default observer(({field, type, placeholder, width, label}) => 
+export default observer(({field, type = 'text'}) => 
         <Form.Field error={field.blurred && field.hasError}>
-            {label &&
+            {field.label &&
             <label htmlFor="{field.id}">
                 {field.label}
             </label>
             }
-            <input {...field.bind({type, placeholder})} autoComplete={'off'}/>
-            {field.error && <Label basic color='red'>{field.error}</Label>}
+            <input {...field.bind({type})} autoComplete={'off'}/>
+            {field.error && <Label pointing color='red'>{field.error}</Label>}
         </Form.Field>);

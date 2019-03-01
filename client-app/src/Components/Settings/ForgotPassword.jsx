@@ -1,8 +1,7 @@
 import React, {Fragment} from 'react';
-import {Button, Divider, Form, Grid, Header, Segment} from "semantic-ui-react";
+import {Button, Divider, Form} from "semantic-ui-react";
 import {inject, observer} from "mobx-react";
 import TextInput from "../../Common/form/inputs/TextInput";
-import authStore from '../Auth/authStore';
 import forms from '../../Common/form/forms';
 
 const form = forms.forgotPassword;

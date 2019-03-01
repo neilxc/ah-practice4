@@ -1,6 +1,4 @@
 import React, {Component, Fragment} from 'react';
-import registerForm from "../Auth/registerFormSetup";
-import loginForm from "../Auth/loginFormSetup";
 import {inject, observer} from "mobx-react";
 import LoginForm from "../Auth/LoginForm";
 import RegisterForm from "../Auth/RegisterForm";

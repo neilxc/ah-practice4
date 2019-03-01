@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
-import {Link, NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Container, Menu, Button} from "semantic-ui-react";
 import LoggedInMenu from "./LoggedInMenu";
 import LoggedOutMenu from "./LoggedOutMenu";
@@ -19,6 +19,9 @@ class Header extends Component {
                     <Menu.Item as={Link} to={'/'} header>
                         <img src="/assets/logo.png" alt="logo" />
                         Re-vents
+                    </Menu.Item>
+                    <Menu.Item as={Link} to={'/activities'}>
+                        Activities
                     </Menu.Item>
                     <Menu.Item>
                         <Button

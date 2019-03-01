@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Application.Activities;
 using Application.Errors;
 using Application.Interfaces;
@@ -13,11 +14,6 @@ namespace Application.Attendances
 {
     public class Delete
     {
-        public class Data
-        {
-
-        }
-
         public class Command : IRequest
         {
             public int Id { get; set; }
@@ -36,13 +32,14 @@ namespace Application.Attendances
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = _context.Activities.GetAllData()
+                var activity = await _context.Activities
+                    .Include(x => x.Attendees)
                     .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
                 
                 if (activity == null)
                     throw new RestException(HttpStatusCode.NotFound, new {Activity = "Not Found"});
 
-                var user = _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(),
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(),
                     cancellationToken);
 
                 var attendance =

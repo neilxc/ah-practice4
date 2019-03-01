@@ -13,22 +13,26 @@ namespace Application.Users
 {
     public class Edit
     {
-        public class UserData
-        {
-            public string Bio { get; set; }
-        }
+//        public class UserData
+//        {
+//            public string Bio { get; set; }
+//            public string Gender { get; set; }
+//            public string Occupation { get; set; }
+//            public string Origin { get; set; }
+//            public string City { get; set; }
+//            public string Status { get; set; }
+//            public DateTime? DateOfBirth { get; set; }
+//        }
 
         public class Command : IRequest<User>
         {
-            public UserData User { get; set; }
-        }
-
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator()
-            {
-                RuleFor(x => x.User.Bio).NotNull().NotEmpty();
-            }
+            public string Bio { get; set; }
+            public string Gender { get; set; }
+            public string Occupation { get; set; }
+            public string Origin { get; set; }
+            public string City { get; set; }
+            public string Status { get; set; }
+            public DateTime? DateOfBirth { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, User>
@@ -51,7 +55,13 @@ namespace Application.Users
                 var user = await _context.Users.FirstOrDefaultAsync(
                     x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);
 
-                user.Bio = request.User.Bio ?? user.Bio;
+                user.Bio = request.Bio ?? user.Bio;
+                user.Gender = request.Gender ?? user.Gender;
+                user.Occupation = request.Occupation ?? user.Occupation;
+                user.Origin = request.Origin ?? user.Origin;
+                user.DateOfBirth = request.DateOfBirth ?? user.DateOfBirth;
+                user.City = request.City ?? user.City;
+                user.Status = request.Status ?? user.Status;
 
                 await _context.SaveChangesAsync(cancellationToken);
 

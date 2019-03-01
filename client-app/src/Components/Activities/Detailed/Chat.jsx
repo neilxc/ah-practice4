@@ -3,8 +3,8 @@ import {Comment, Header, Segment} from "semantic-ui-react";
 import ChatForm from "./ChatForm";
 import {inject, observer} from "mobx-react";
 import forms from '../../../Common/form/forms';
-import {HubConnection, HubConnectionBuilder, LogLevel} from '@aspnet/signalr';
 import formatDistance from 'date-fns/formatDistance';
+import {Link} from "react-router-dom";
 
 @inject('authStore', 'activityStore')
 @observer
@@ -19,20 +19,12 @@ class Chat extends Component {
     };
 
     componentDidMount = () => {
-        // const username = this.props.authStore.currentUser.username;
         this.props.activityStore.createHubConnection();
-        // this.setState({hubConnection}, () => {
-        //     this.state.hubConnection
-        //         .start()
-        //         .then(() => console.log('Connection started!'))
-        //         .catch(err => console.log('Error while establishing connection : ', err));
-        //    
-        //     this.state.hubConnection.on('sendToAll', (comment) => {
-        //         const comments = this.state.comments.concat(comment);
-        //         this.setState({comments})
-        //     })
-        // })
     };
+    
+    componentWillUnmount() {
+        this.props.activityStore.stopHubConnection();
+    }
 
     render() {
         const {activity: {comments}} = this.props;
@@ -48,7 +40,7 @@ class Chat extends Component {
                             <Comment key={i}>
                                 <Comment.Avatar src={comment.author.image || '/assets/user.png'}/>
                                 <Comment.Content>
-                                    <Comment.Author>
+                                    <Comment.Author as={Link} to={`/profile/${comment.author.username}`}>
                                         {comment.author.username}
                                     </Comment.Author>
                                     <Comment.Metadata>

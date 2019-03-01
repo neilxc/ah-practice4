@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,7 +45,9 @@ namespace Application.Comments
                 if (activity == null)
                     throw new RestException(HttpStatusCode.NotFound, new {Activity = "Not found"});
 
-                var comments = _mapper.Map<ICollection<Comment>, List<CommentDto>>(activity.Comments);
+                var enumeratedComments = activity.Comments.OrderBy(x => x.CreatedAt).ToList();
+
+                var comments = _mapper.Map<ICollection<Comment>, List<CommentDto>>(enumeratedComments);
 
                 return comments;
             }

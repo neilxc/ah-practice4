@@ -1,5 +1,6 @@
 import { categoryOptions } from '../data/options';
 import activityStore from "../../../Components/Activities/activityStore";
+import {combineDateAndTime} from "../../utils";
 
 const fields = {
     fields: [
@@ -7,6 +8,7 @@ const fields = {
         'description',
         'category',
         'date',
+        'time',
         'city',
         'venue'
     ],
@@ -15,6 +17,7 @@ const fields = {
         description: 'Description',
         category: 'Activity Category',
         date: 'Activity Date',
+        time: 'Time of activity',
         city: 'City',
         venue: 'Venue'
     },
@@ -23,35 +26,29 @@ const fields = {
         description: 'required|string',
         category: 'required',
         date: 'required',
+        time: 'required',
         city: 'required',
         venue: 'required'
     },
     extra: {
-        date: {
-            showDateTime: true,
-            dateFormat: "YYYY-MM-DD HH:mm",
-            timeFormat: "HH:mm",
-            showTimeSelect: true
-        },
         category: categoryOptions,
     }
 };
-// handleSubmit = async () => {
 
 const hooks = {
     hooks: {
         async onSuccess(form) {
+            const dateAndTime = combineDateAndTime(form.$('date').value, form.$('time').value);
+            const {date, time, ...updatedActivity} = form.values();
+            console.log({...updatedActivity, date: dateAndTime});
             if (form.has('id')) {
-                console.log('im in the update activity hoook...0');
-                const updatedActivity = await activityStore.updateActivity(form.values());
-                console.log(updatedActivity);
+                console.log('updated activity hook');
+                await activityStore.updateActivity({...updatedActivity, date: dateAndTime});
                 return form;
             } else {
-                console.log('adding activity inside mobx form hook');
-                const newActivity = await activityStore.addActivity(form.values());
-                console.log(newActivity);
+                console.log('create new activity hook');
+                const newActivity = await activityStore.addActivity({...updatedActivity, date: dateAndTime});
                 form.add({key: 'id', value: newActivity.id});
-                console.log({form});
                 return form;
             }
         },

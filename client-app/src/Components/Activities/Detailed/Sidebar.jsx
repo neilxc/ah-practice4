@@ -29,8 +29,11 @@ export default ({attendees}) =>
                         <Image size="tiny" src={attendee.image || '/assets/user.png'}/>
                         <Item.Content verticalAlign="middle">
                             <Item.Header as="h3">
-                                <Link to={`/profile/3`}>{attendee.username}</Link>
+                                <Link to={`/profile/${attendee.username}`}>{attendee.username}</Link>
                             </Item.Header>
+                            {attendee.following &&
+                                <Item.Extra style={{color: 'orange'}}>Following</Item.Extra>
+                            }
                         </Item.Content>
                     </Item>
                 ))}

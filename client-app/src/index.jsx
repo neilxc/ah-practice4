@@ -13,6 +13,10 @@ import commonStore from "./Common/commonStore";
 import userStore from "./Components/Users/userStore";
 import authStore from "./Components/Auth/authStore";
 import modalStore from "./Common/modals/modalStore";
+import dateFnsLocalizer from 'react-widgets-date-fns';
+import 'react-widgets/dist/css/react-widgets.css';
+
+dateFnsLocalizer();
 
 const browserHistory = createBrowserHistory();
 export const routingStore = new RouterStore();

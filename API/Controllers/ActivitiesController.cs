@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Application.Activities;
 using MediatR;
@@ -18,11 +19,11 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> List(string sort, string username, bool host, int? limit, int? offset)
+        public async Task<IActionResult> List(string sort, string username, string host, bool going, DateTime startDate, int? limit, int? offset)
         {
-            var activities = await _mediator.Send(new List.Query(sort, username, host, limit, offset));
+            var activities = await _mediator.Send(new List.Query(sort, username, host, going, startDate, limit, offset));
 
-            return Ok(activities);
+            return Ok(activities);    
         }
 
         [HttpGet("{id}", Name = "GetActivity")]

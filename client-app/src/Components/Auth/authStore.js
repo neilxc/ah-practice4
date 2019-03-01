@@ -3,7 +3,6 @@ import agent from '../../agent';
 import commonStore from '../../Common/commonStore';
 import modalStore from "../../Common/modals/modalStore";
 import {routingStore} from '../../index';
-import {toDate} from "date-fns";
 
 class AuthStore {
     @observable inProgress = false;
@@ -16,14 +15,27 @@ class AuthStore {
 
     @action login = async (values) => {
         try {
+            this.inProgress = true;
             const user = await agent.Auth.login(values.email, values.password);
             commonStore.setToken(user.token, user.refreshToken);
             await this.getUser();
+            this.inProgress = false;
             modalStore.closeModal();
             routingStore.history.push('/activities')
         } catch (err) {
             this.errors = err.response && err.response.body && err.response.body.errors;
+            this.inProgress = false;
             throw err;
+        }
+    };
+    
+    @action externalLogin = async (providerResponse) => {
+        try {
+            const user = await agent.Auth.externalLogin(providerResponse);
+            commonStore.setToken(user.token, user.refreshToken);
+            await this.getUser();
+        } catch (err) {
+            console.log(err)
         }
     };
 
@@ -38,34 +50,28 @@ class AuthStore {
         }
     };
 
-    @action refresh = async () => {
-        try {
-            const user = await agent.Auth.refresh(commonStore.token, commonStore.refreshToken);
-            commonStore.setToken(user.token, user.refreshToken);
-            await this.getUser();
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    // @action refresh = async () => {
+    //     try {
+    //         const user = await agent.Auth.refresh(commonStore.token, commonStore.refreshToken);
+    //         console.log({user});
+    //         commonStore.setToken(user.token, user.refreshToken);
+    //         await this.getUser();
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // };
 
     @action logout = () => {
-        commonStore.setToken(undefined);
+        commonStore.setToken(undefined, undefined);
         this.currentUser = null;
         routingStore.history.push('/')
     };
 
     @action getUser = async () => {
         try {
-            if (this.isTokenExpired()) {
-                console.log('token is expired.. lets refresh');
-                return await this.refresh();
-            } else {
-                console.log('token is current');
-                const user = await agent.Auth.current();
-                this.currentUser = user;
-                this.username = user.username;
-                console.log('got me a user')
-            }
+            const user = await agent.Auth.current();
+            this.currentUser = user;
+            this.username = user.username;
         } catch (err) {
             console.log(err);
         }
@@ -111,12 +117,12 @@ class AuthStore {
         }
     };
     
-    isTokenExpired() {
-        const refreshThreshold = toDate(new Date().getTime());
-        const tokenExpiry = toDate(commonStore.tokenExpiry * 1000);
-        console.log(refreshThreshold > tokenExpiry);
-        return refreshThreshold > tokenExpiry;
-    }
+    // isTokenExpired() {
+    //     const refreshThreshold = toDate(new Date().getTime());
+    //     const tokenExpiry = toDate(commonStore.tokenExpiry * 1000);
+    //     console.log(refreshThreshold > tokenExpiry);
+    //     return refreshThreshold > tokenExpiry;
+    // }
 
 }
 

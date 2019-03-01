@@ -8,15 +8,17 @@ namespace API.Controllers
     public class AttendanceController : BaseController
     {
         [HttpPost("{id}/attend")]
-        public async Task<IActionResult> Add(int id)
+        public async Task<IActionResult> Add(int id, Add.Command command)
         {
-            return Ok(await Mediator.Send(new Add.Command(id)));
+            command.Id = id;
+            return Ok(await Mediator.Send(command));
         }
 
         [HttpDelete("{id}/attend")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, Delete.Command command)
         {
-            return Ok(await Mediator.Send(new Delete.Command{Id = id}));
+            command.Id = id;
+            return Ok(await Mediator.Send(command));
         }
     }
 }

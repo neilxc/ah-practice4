@@ -28,7 +28,7 @@ namespace Application.Tests.Activities
             });
             context.SaveChanges();
 
-            var activityData = new Edit.ActivityData
+            var activityData = new Edit.Command
             {
                 Title = "Updated Title"
             };
@@ -36,7 +36,7 @@ namespace Application.Tests.Activities
             const int id = 1;
             var sut = new Edit.Handler(context, _mapper);
             var result = sut.Handle(
-                new Edit.Command{Id = id, Activity = activityData}, CancellationToken.None).Result;
+                new Edit.Command{Id = id, Title = activityData.Title}, CancellationToken.None).Result;
         
             Assert.Equal("Updated Title", result.Title);
             Assert.Equal("Test Description", result.Description);

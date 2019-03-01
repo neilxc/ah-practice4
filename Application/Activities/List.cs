@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -21,18 +22,22 @@ namespace Application.Activities
 
         public class Query : IRequest<ActivitiesEnvelope>
         {
-            public Query(string sort, string username, bool host, int? limit, int? offset)
+            public Query(string sort, string username, string host, bool going, DateTime? startDate, int? limit, int? offset)
             {
                 Sort = sort;
                 Username = username;
                 Host = host;
+                Going = going;
+                StartDate = startDate;
                 Limit = limit;
                 Offset = offset;
             }
 
             public string Sort { get; set; }
             public string Username { get; set; }
-            public bool Host { get; set; }
+            public string Host { get; set; }
+            public bool Going { get; set; }
+            public DateTime? StartDate { get; set; }
             public int? Limit { get; }
             public int? Offset { get; }
         }
@@ -41,11 +46,13 @@ namespace Application.Activities
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context, IMapper mapper)
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor)
             {
                 _context = context;
                 _mapper = mapper;
+                _userAccessor = userAccessor;
             }
 
             public async Task<ActivitiesEnvelope> Handle(Query request, CancellationToken cancellationToken)
@@ -58,10 +65,22 @@ namespace Application.Activities
                         .Where(a => a.Attendees.Any(x => x.AppUser.UserName == request.Username));
                 }
                 
-                if (!string.IsNullOrEmpty(request.Username) && request.Host)
+                if (!string.IsNullOrEmpty(request.Host))
                 {
                     queryable = queryable
-                        .Where(a => a.Attendees.Any(x => x.IsHost));
+                        .Where(a => a.Attendees.Any(x => x.IsHost && x.AppUser.UserName == request.Host));
+                }
+
+                if (request.Going)
+                {   
+                    queryable = queryable
+                        .Where(a => a.Attendees.Any(x => x.AppUser.UserName == _userAccessor.GetCurrentUsername()));
+                }
+
+                if (request.StartDate != null)
+                {
+                    queryable = queryable
+                        .Where(d => d.Date >= request.StartDate);
                 }
 
                 switch (request.Sort)
@@ -83,9 +102,26 @@ namespace Application.Activities
                     .Take(request.Limit ?? 3)
                     .ToListAsync(cancellationToken);
 
+                var activitiesToReturn = _mapper.Map<List<Activity>, List<ActivityDto>>(activities);
+
+                foreach (var activity in activitiesToReturn)
+                {
+                    var currentUser = await _context.Users
+                        .Include(x => x.Following)
+                        .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);
+
+                    foreach (var attendee in activity.Attendees)
+                    {
+                        if (currentUser.Following.Any(x => x.TargetId == attendee.Id))
+                        {
+                            attendee.Following = true;
+                        }
+                    }
+                }
+
                 return new ActivitiesEnvelope
                 {
-                    Activities = _mapper.Map<List<Activity>, List<ActivityDto>>(activities),
+                    Activities = activitiesToReturn,
                     ActivityCount = queryable.Count()
                 };
             }

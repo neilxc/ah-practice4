@@ -11,12 +11,13 @@ body {
             rgb(33, 138, 174) 69%,
             rgb(32, 167, 172) 89%
     ) !important;
+    height: 100vh;
 }
 
-.masthead.segment {
-    min-height: 400px;
-    padding: 1em 0 !important;
-}
+/*.masthead.segment {*/
+    /*height: 100%;*/
+    /*padding: 1em 0 !important;*/
+/*}*/
 
 .masthead .ui.menu .ui.button,
 .ui.menu a.ui.inverted.button {
@@ -116,4 +117,16 @@ body {
 
 .dropzone--isActive {
     border: dashed 3px green;
+}
+
+/*select list style*/ 
+li.rw-list-option {
+    text-transform: capitalize;
+}
+
+.selectList ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.47em;
 }

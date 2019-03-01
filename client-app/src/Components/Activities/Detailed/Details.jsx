@@ -7,6 +7,7 @@ import Chat from "./Chat";
 import Sidebar from "./Sidebar";
 import {Grid} from "semantic-ui-react";
 import MobxReactFormDevTools from 'mobx-react-form-devtools';
+import LoadingComponent from "../../../Layouts/LoadingComponent";
 
 @withRouter
 @inject('activityStore', 'authStore', 'commonStore')
@@ -20,14 +21,15 @@ class Details extends React.Component {
 
     render() {
         const {
-            activityStore: {addComment, username, attendActivity,cancelAttendance, activity},
-            commonStore: {asyncLoading},
+            activityStore: {attendActivity,cancelAttendance, activity, loading},
             authStore: {currentUser}
         } = this.props;
-        if (asyncLoading > 0) return <p>Loading...</p>;
         const {attendees} = activity;
+        if (loading) return <LoadingComponent inverted={true} content={'Loading Activity...'}/>;
         const isHost = activity.host.username === currentUser.username;
         const isGoing = attendees && attendees.filter(a => a.username === currentUser.username)[0];
+        
+
 
         return (
             <Grid>

@@ -12,9 +12,7 @@ namespace Application.Users
 {
     public class Details
     {
-        public class Query : IRequest<User>
-        {
-        }
+        public class Query : IRequest<User>{}
 
         public class Handler : IRequestHandler<Query, User>
         {

@@ -12,13 +12,10 @@ class CommonStore {
         reaction(
             () => this.token,
             token => {
-                console.log('inside reaction');
                 if (token) {
-                    console.log('token reaction');
                     // console.log(this.tokenExpiry);
                     window.localStorage.setItem('jwt', token);
                 } else {
-                    console.log('no token');
                     window.localStorage.removeItem('jwt');
                 }
             }
@@ -27,7 +24,6 @@ class CommonStore {
             () => this.refreshToken,
             refreshToken => {
                 if (refreshToken) {
-                    console.log('refresh token reaction');
                     window.localStorage.setItem('refreshToken', refreshToken);
                 } else {
                     window.localStorage.removeItem('refreshToken')
@@ -41,14 +37,12 @@ class CommonStore {
     }
     
     @action setToken(token, refreshToken) {
-        console.log('setting token');
         this.token = token;
         this.refreshToken = refreshToken;
         // this.tokenExpiry = jwtDecode(token).exp;
     }
     
     @action setAppLoaded() {
-        console.log('app is loaded');
         this.appLoaded = true;
     }
 }

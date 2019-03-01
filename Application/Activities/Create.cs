@@ -13,7 +13,17 @@ namespace Application.Activities
 {
     public class Create
     {
-        public class ActivityData
+//        public class ActivityData
+//        {
+//            public string Title { get; set; }
+//            public string Description { get; set; }
+//            public string Category { get; set; }
+//            public DateTime Date { get; set; }
+//            public string City { get; set; }
+//            public string Venue { get; set; }
+//        }
+
+        public class Command : IRequest<ActivityDto>
         {
             public string Title { get; set; }
             public string Description { get; set; }
@@ -21,26 +31,18 @@ namespace Application.Activities
             public DateTime Date { get; set; }
             public string City { get; set; }
             public string Venue { get; set; }
-            public GeoCoordinate GeoCoordinate { get; set; }
-        }
-
-        public class Command : IRequest<ActivityDto>
-        {
-            public ActivityData Activity { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Activity.Title).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.Description).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.Category).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.Date).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.City).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.Venue).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.GeoCoordinate.Latitude).NotEmpty().NotNull();
-                RuleFor(x => x.Activity.GeoCoordinate.Longitude).NotEmpty().NotNull();
+                RuleFor(x => x.Title).NotEmpty().NotNull();
+                RuleFor(x => x.Description).NotEmpty().NotNull();
+                RuleFor(x => x.Category).NotEmpty().NotNull();
+                RuleFor(x => x.Date).NotEmpty().NotNull();
+                RuleFor(x => x.City).NotEmpty().NotNull();
+                RuleFor(x => x.Venue).NotEmpty().NotNull();
             }
         }
 
@@ -59,11 +61,19 @@ namespace Application.Activities
             
             public async Task<ActivityDto> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = _mapper.Map<ActivityData, Activity>(request.Activity);
+                var activity = new Activity
+                {
+                    Title = request.Title,
+                    Description = request.Description,
+                    Category = request.Category,
+                    Date = request.Date,
+                    City = request.City,
+                    Venue = request.Venue
+                };
                 
                 await _context.Activities.AddAsync(activity, cancellationToken);
 
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);
+                var user = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);
 
                 var attendee = new ActivitiyAttendee
                 {

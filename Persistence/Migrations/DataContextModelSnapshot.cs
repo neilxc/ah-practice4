@@ -46,15 +46,11 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int?>("GeoCoordinateId");
-
                     b.Property<string>("Title");
 
                     b.Property<string>("Venue");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GeoCoordinateId");
 
                     b.ToTable("Activities");
                 });
@@ -68,13 +64,21 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Bio");
 
+                    b.Property<string>("City");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<DateTime?>("DateOfBirth");
+
+                    b.Property<string>("DisplayName");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("Gender");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -86,13 +90,23 @@ namespace Persistence.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
 
+                    b.Property<string>("Occupation");
+
+                    b.Property<string>("Origin");
+
                     b.Property<string>("PasswordHash");
 
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<string>("RefreshToken");
+
+                    b.Property<DateTime>("RefreshTokenExpiry");
+
                     b.Property<string>("SecurityStamp");
+
+                    b.Property<string>("Status");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -144,20 +158,6 @@ namespace Persistence.Migrations
                     b.HasIndex("TargetId");
 
                     b.ToTable("FollowedPeople");
-                });
-
-            modelBuilder.Entity("Domain.GeoCoordinate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<float>("Latitude");
-
-                    b.Property<float>("Longitude");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GeoCoordinate");
                 });
 
             modelBuilder.Entity("Domain.Photo", b =>
@@ -328,13 +328,6 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Domain.Activity", b =>
-                {
-                    b.HasOne("Domain.GeoCoordinate", "GeoCoordinate")
-                        .WithMany()
-                        .HasForeignKey("GeoCoordinateId");
-                });
-
             modelBuilder.Entity("Domain.Comment", b =>
                 {
                     b.HasOne("Domain.Activity", "Activity")
@@ -349,12 +342,12 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.FollowedPeople", b =>
                 {
                     b.HasOne("Domain.AppUser", "Observer")
-                        .WithMany("Followers")
+                        .WithMany("Following")
                         .HasForeignKey("ObserverId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.AppUser", "Target")
-                        .WithMany("Following")
+                        .WithMany("Followers")
                         .HasForeignKey("TargetId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

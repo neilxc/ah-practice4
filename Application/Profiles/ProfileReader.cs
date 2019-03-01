@@ -30,6 +30,8 @@ namespace Application.Profiles
             var user = await _context.Users
                 .AsNoTracking()
                 .Include(p => p.Photos)
+                .Include(x => x.Followers)
+                .Include(x => x.Following)
                 .FirstOrDefaultAsync(x => x.UserName == username);
             
             if (user == null)
@@ -44,11 +46,14 @@ namespace Application.Profiles
                     .Include(x => x.Followers)
                     .FirstOrDefaultAsync(x => x.UserName == currentUsername);
 
-                if (currentUser.Followers.Any(x => x.TargetId == user.Id))
+                if (currentUser.Following.Any(x => x.TargetId == user.Id))
                 {
                     profile.IsFollowed = true;
                 }
             }
+
+            profile.FollowersCount = user.Followers.Count();
+            profile.FollowingCount = user.Following.Count();
 
             return profile;
         }

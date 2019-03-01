@@ -3,20 +3,16 @@ import {Form, Button, Grid, Segment, Header} from "semantic-ui-react";
 import {inject, observer} from "mobx-react";
 import TextInput from "../../Common/form/inputs/TextInput";
 import SelectInput from "../../Common/form/inputs/SelectInput";
-import DateInput from "../../Common/form/inputs/DateInput";
 import {Link, withRouter} from "react-router-dom";
 import {toast} from "react-toastify";
 import MobxReactFormDevTools from 'mobx-react-form-devtools';
-import forms from '../../Common/form/forms';
 import {toJS} from "mobx";
-import MobxReactForm from 'mobx-react-form';
 import SubmitButton from "../../Common/form/controls/SubmitButton";
+import WidgetDatePicker from "../../Common/form/inputs/WidgetDatePicker";
+import WidgetTimePicker from "../../Common/form/inputs/WidgetTimePicker";
+import LoadingComponent from "../../Layouts/LoadingComponent";
 
 MobxReactFormDevTools.open(false);
-
-// render the component
-
-
 
 @withRouter
 @inject('activityStore', 'commonStore')
@@ -25,7 +21,6 @@ class ActivityForm extends Component {
    
     componentWillMount() {
         this.initializeForm().then(() => console.log('form initialized'));
-        console.log(this.props.form);
     };
     
     componentWillUnmount() {
@@ -39,12 +34,14 @@ class ActivityForm extends Component {
             console.log('have id and retrieving values');
             await this.props.activityStore.loadActivity(id, {acceptCached: true});
             const activityClone = toJS(this.props.activityStore.activity);
-            const {attendees, comments, geoCoordinate, host, ...formValues} = activityClone;
-            form.init(formValues);  
+            const activityDate = new Date(activityClone.date);
+            const time = new Date(activityClone.date);
+            const {attendees, comments, geoCoordinate, host, date, ...formValues} = activityClone;
+            form.init({...formValues, date: activityDate, time});  
         } else {
             console.log('clearing form');
             this.props.activityStore.clearActivity();
-            form.clear();
+            form.init();
         }
     };
 
@@ -60,6 +57,7 @@ class ActivityForm extends Component {
                 this.props.history.push(`/activities/${activity.id}`)
             }
         } else {
+            // form.submit();
             form.add({key: 'geoCoordinate', value: {
                     latitude: 2,
                     longitude: 3
@@ -75,23 +73,30 @@ class ActivityForm extends Component {
     };
 
     render() {
-        if (this.props.commonStore.asyncLoading > 0 || !this.props.commonStore.appLoaded) return <p>Loading...</p>;
         const {
             form,
             activityStore: {
-                activity
+                activity,
+                loading
             },
         } = this.props;
         return (
             <Grid>
                 <Grid.Column width={10}>
+                    {loading && 
+                        <LoadingComponent inverted={true} content={'Loading activity...'}/>
+                    }
                     <Segment>
                         <Header sub color={'teal'} content={'Activity Details'}/>
                         <Form>
                             <TextInput field={form.$('title')}/>
                             <TextInput field={form.$('description')}/>
                             <SelectInput field={form.$('category')}/>
-                            <DateInput field={form.$('date')}/>
+                            {/*<DateInput field={form.$('date')}/>*/}
+                            <Form.Group widths={'equal'}>
+                                <WidgetDatePicker field={form.$('date')}/>
+                                <WidgetTimePicker field={form.$('time')}/>
+                            </Form.Group>
                             <Header sub color="teal" content="Activity Location details"/>
                             <TextInput field={form.$('city')}/>
                             <TextInput field={form.$('venue')}/>
@@ -105,7 +110,7 @@ class ActivityForm extends Component {
                     </Segment>
                 </Grid.Column>
                 <Grid.Column width={6}>
-                    <MobxReactFormDevTools.UI />
+                    {/*<MobxReactFormDevTools.UI />*/}
                 </Grid.Column>
             </Grid>
 

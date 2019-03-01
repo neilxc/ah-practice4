@@ -8,6 +8,7 @@ using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -39,23 +40,31 @@ namespace Application.Comments
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
             private readonly IMapper _mapper;
+            private readonly IHubContext<ChatHub, IChatHub> _hubContext;
 
-            public Handler(DataContext context, IUserAccessor userAccessor, IMapper mapper)
-            {
+            public Handler(DataContext context, 
+                IUserAccessor userAccessor, 
+                IMapper mapper,
+                IHubContext<ChatHub, IChatHub> hubContext)
+            {    
                 _context = context;
                 _userAccessor = userAccessor;
                 _mapper = mapper;
+                _hubContext = hubContext;
             }
             
             public async Task<CommentDto> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.Include(x => x.Comments)
+                var activity = await _context.Activities
+                    .Include(x => x.Comments)
+                    .ThenInclude(p => p.Author.Photos)
                     .FirstOrDefaultAsync(x => x.Id == request.ActivityId, cancellationToken);
                 
                 if (activity == null)
                     throw new RestException(HttpStatusCode.NotFound, new {Activity = "Not found"});
 
                 var author = await _context.Users
+                    .Include(p => p.Photos)
                     .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(), cancellationToken);
 
                 var comment = new Comment
@@ -72,6 +81,8 @@ namespace Application.Comments
                 await _context.SaveChangesAsync(cancellationToken);
 
                 var commentDto = _mapper.Map<Comment, CommentDto>(comment);
+                
+                await _hubContext.Clients.All.SendComment(commentDto);
 
                 return commentDto;
             }

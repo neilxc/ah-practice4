@@ -9,10 +9,12 @@ namespace Application.Activities
         public static IQueryable<Activity> GetAllData(this DbSet<Activity> activities)
         {
             return activities
-                .Include(x => x.GeoCoordinate)
                 .Include(x => x.Attendees)
                 .ThenInclude(x => x.AppUser)
                 .ThenInclude(x => x.Photos)
+                .Include(c => c.Comments)
+                .ThenInclude(a => a.Author)
+                .ThenInclude(a => a.Photos)
                 .AsNoTracking();
         }
     }

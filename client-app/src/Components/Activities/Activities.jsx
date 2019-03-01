@@ -4,15 +4,17 @@ import Item from './Item';
 import format from 'date-fns/format'
 import {withContext} from "../../context";
 import {inject, observer} from "mobx-react";
-import {Grid, Header, List} from "semantic-ui-react";
+import {Button, Grid, Header, List, Pagination} from "semantic-ui-react";
 import Filters from "./Filters";
+import LoadingComponent from "../../Layouts/LoadingComponent";
+import {Protected} from "../../Common/auth/Protected";
 
+@Protected
 @withContext
 @inject('activityStore')
 @observer
 class Activities extends Component {
     componentDidMount() {
-        console.log('about to load some activities');
         this.props.activityStore.loadActivities();
     }
     
@@ -21,18 +23,39 @@ class Activities extends Component {
             this.props.activityStore.loadActivities();
         }
     }
+    
+    handleSetPage = (page) => {
+        this.props.activityStore.setPage(page);
+        this.props.activityStore.loadActivities();
+    };
+
+    handlePaginationChange = (e, {activePage}) => {
+        console.log(activePage);
+        this.props.activityStore.setPage(activePage);
+        this.props.activityStore.loadActivities();
+    };
 
     render() {
         const {
             activityStore: {
                 activitiesByDateFromStore,
                 selectActivity,
+                page,
+                totalPagesCount,
+                loading
             }
         } = this.props;
 
         return (
             <Grid>
                 <Grid.Column width={10}>
+                    {loading &&
+                        
+                        <Fragment>
+                            <Header sub color={'teal'} content={'Activities loading...'}/>
+                            <LoadingComponent inverted={true} content={'Loading activities'} />
+                        </Fragment>
+                    }
                     {activitiesByDateFromStore.map(([group, activities]) =>
                         <Fragment key={group}>
                             <Header sub color={'teal'}>
@@ -47,9 +70,13 @@ class Activities extends Component {
                                     />
                                 )}
                             </List>
-
                         </Fragment>
                     )}
+                    <Pagination
+                        activePage={page}
+                        totalPages={totalPagesCount}
+                        onPageChange={this.handlePaginationChange}
+                    />
                 </Grid.Column>
                 <Filters/>
             </Grid>

@@ -50,11 +50,6 @@ namespace Persistence
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -73,11 +68,6 @@ namespace Persistence
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -96,11 +86,6 @@ namespace Persistence
                         Category = "culture",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -119,11 +104,6 @@ namespace Persistence
                         Category = "food",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -142,11 +122,6 @@ namespace Persistence
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -165,11 +140,6 @@ namespace Persistence
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -188,11 +158,6 @@ namespace Persistence
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -211,11 +176,6 @@ namespace Persistence
                         Category = "music",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -234,11 +194,6 @@ namespace Persistence
                         Category = "travel",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee
@@ -257,11 +212,6 @@ namespace Persistence
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
-                        GeoCoordinate = new GeoCoordinate
-                        {
-                            Latitude = 51.5081F,
-                            Longitude = 0.0759F
-                        },
                         Attendees = new List<ActivitiyAttendee>
                         {
                             new ActivitiyAttendee

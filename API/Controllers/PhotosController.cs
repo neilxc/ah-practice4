@@ -8,7 +8,7 @@ namespace API.Controllers
     public class PhotosController : BaseController
     {
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm] Add.Command command)
+        public async Task<IActionResult> Add([FromForm]Add.Command command)
         {
             var response = await Mediator.Send(command);
             return Ok(response);
@@ -18,6 +18,12 @@ namespace API.Controllers
         public async Task<Unit> Delete(int id)
         {
             return await Mediator.Send(new Delete.Command(id));
+        }
+
+        [HttpPost("{id}")]
+        public async Task<Unit> SetMain(int id)
+        {
+            return await Mediator.Send(new SetMain.Command(id));
         }
     }
 }

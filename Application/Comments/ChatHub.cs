@@ -1,9 +1,7 @@
-using System.Threading;
-using Application.Comments;
 using Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Infrastructure.SignalR
+namespace Application.Comments
 {
     public class ChatHub : Hub<IChatHub>
     {

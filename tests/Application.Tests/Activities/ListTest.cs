@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
 using Application.Activities;
+using Application.Interfaces;
 using AutoMapper;
 using Domain;
+using Moq;
 using Xunit;
 
 namespace Application.Tests.Activities
@@ -20,13 +22,16 @@ namespace Application.Tests.Activities
         [Fact]
         public void List_Should_Return_List_Of_Activities()
         {
+            var userAccessor = new Mock<IUserAccessor>();
+            userAccessor.Setup(u => u.GetCurrentUsername()).Returns("test");
+            
             var context = GetDbContext();
             context.Activities.Add(new Activity {Id = 1, Title = "Test Activity 1", Date = DateTime.Now.AddMonths(1)});
             context.Activities.Add(new Activity {Id = 2, Title = "Test Activity 2", Date = DateTime.Now.AddMonths(2)});
             context.SaveChanges();
             
-            var sut = new List.Handler(context, _mapper);
-            var result = sut.Handle(new List.Query(null, null, false, null, null), CancellationToken.None).Result;
+            var sut = new List.Handler(context, _mapper, userAccessor.Object);
+            var result = sut.Handle(new List.Query(null, null, false, false, null, null, null), CancellationToken.None).Result;
             
             Assert.Equal(2, result.ActivityCount);
             Assert.Equal("Test Activity 1", result.Activities[0].Title);

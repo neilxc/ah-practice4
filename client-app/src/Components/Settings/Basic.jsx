@@ -1,53 +1,40 @@
 import React, {Component} from 'react';
-import {Button, Divider, Form, Header, Segment} from "semantic-ui-react";
-import form from './basicFormSetup';
+import {Divider, Form, Header, Segment} from "semantic-ui-react";
 import TextInput from "../../Common/form/inputs/TextInput";
-import DateInput from "../../Common/form/inputs/DateInput";
+import forms from '../../Common/form/forms';
 import {inject, observer} from "mobx-react";
+import SubmitButton from "../../Common/form/controls/SubmitButton";
+import WidgetDatePicker from "../../Common/form/inputs/WidgetDatePicker";
+import WidgetSelectList from "../../Common/form/inputs/WidgetSelectList";
+import TextAreaInput from "../../Common/form/inputs/TextAreaInput";
 
-@inject('authStore')
+const form = forms.basic;
+
+@inject('authStore', 'userStore')
 @observer
 class Basic extends Component {
-    state = {};
-
     componentDidMount() {
-        form.update(this.props.authStore.currentUser);
-        form.$('gender').set(this.props.authStore.currentUser.gender);
-        this.setState({
-            value: this.props.authStore.currentUser.gender
-        })
+        const {gender, dateOfBirth, city, status, bio,origin} = this.props.authStore.currentUser;
+        const dob = new Date(dateOfBirth);
+        form.init({gender, dateOfBirth: dob, city, status, bio, origin});
     }
 
-    handleChange = (e, {value}) => {
-        this.setState({value});
-        form.$('gender').set(value);
-    };
-
     render() {
-        const {value} = this.state;
+        const {loading} = this.props.userStore;
         return (
             <Segment>
                 <Header dividing size={'large'} content={'Basics'}/>
                 <Form>
-                    <Form.Group inline>
-                        <label>Gender</label>
-                        <Form.Radio
-                            label={'Male'}
-                            value={'male'}
-                            checked={value === 'male'}
-                            onChange={this.handleChange}
-                        />
-                        <Form.Radio
-                            label={'Female'}
-                            value={'female'}
-                            checked={value === 'female'}
-                            onChange={this.handleChange}
-                        />
+                    <Form.Group widths={'equal'}>
+                        <WidgetSelectList field={form.$('gender')}/>
+                        <WidgetDatePicker field={form.$('dateOfBirth')}/>
                     </Form.Group>
-                    <DateInput field={form.$('dateOfBirth')} width={8} showTimeSelect={false}/>
+                    <WidgetSelectList field={form.$('status')} inline={true}/>
+                    <TextAreaInput field={form.$('bio')} width={8} rows={4}/>
                     <TextInput field={form.$('city')} width={8}/>
+                    <TextInput field={form.$('origin')} width={8}/>
                     <Divider/>
-                    <Button size={'large'} positive content={'Update Profile'} onClick={form.onSubmit}/>
+                    <SubmitButton form={form} content={'Update Profile'} loading={loading}/>
                 </Form>
             </Segment>
         )

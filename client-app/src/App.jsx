@@ -17,6 +17,8 @@ import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 import MobxReactFormDevTools from "mobx-react-form-devtools";
 import ModalContainer from "./Common/modals/ModalContainer";
+import LoadingComponent from "./Layouts/LoadingComponent";
+import UserDetailedPage from "./Components/Users/Detailed/UserDetailed";
 
 MobxReactFormDevTools.register(forms);
 
@@ -25,27 +27,24 @@ MobxReactFormDevTools.register(forms);
 @observer    
 class App extends Component {
     componentWillMount() {
-        console.log('about to mount app');
         if (!this.props.commonStore.token) {
-            console.log('no token setting app loaded');
             this.props.commonStore.setAppLoaded();
         }
     }
 
     componentDidMount() {
-        console.log('mounting app');
-        console.log(this.props.commonStore.token);
         if (this.props.commonStore.token) {
             this.props.authStore.getUser().finally(() => this.props.commonStore.setAppLoaded());
         }
     }
 
     render() {
-        if (!this.props.commonStore.appLoaded) return <p>Loading...</p>;
+        if (!this.props.commonStore.appLoaded) return <LoadingComponent content={'Loading app...'}/>;
         return (
             <Fragment>
                 <ToastContainer position={'bottom-right'}/>
                 <DevTools />
+                <MobxReactFormDevTools.UI />
                 <ModalContainer/>
                 <Switch>
                     <Route exact path={'/'} component={Home}/>
@@ -54,9 +53,10 @@ class App extends Component {
                     <Fragment>
                         <Header/>
                         <Container className={'main'}>
-                            <Switch>
+                            <Switch key={this.props.location.key}>
                                 <Route exact path={'/activities'} component={Activities}/>
                                 <Route path={'/activities/:id'} component={Details}/>
+                                <Route exact path={'/profile/:id'} component={UserDetailedPage}/>
                                 <Route exact path={'/manage/:id'} render={() => <ActivityForm form={forms.activityForm} key={'existing'} />}/>
                                 <Route exact path={'/createActivity'} render={() => <ActivityForm form={forms.activityForm} key={'new'} />}/>
                                 <Route path={'/settings'} component={SettingsDashboard}/>

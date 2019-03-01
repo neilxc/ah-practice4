@@ -19,5 +19,19 @@ namespace API.Controllers
         {
             return Ok(await Mediator.Send(new Delete.Command{Username = username}));
         }
+
+        [HttpGet("{username}/{followType}")]
+        public async Task<IActionResult> Following(string username, string followType)
+        {
+            var users = await Mediator.Send(new List.Query{Username = username, FollowType = followType});
+
+            return Ok(users);
+        }
+        
+//        [HttpGet("{username}/followers")]
+//        public async Task<IActionResult> Followers(string username)
+//        {
+//            return Ok();
+//        }
     }
 }
